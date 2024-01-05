@@ -15,15 +15,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import fr.uge.review.ui.theme.ReviewTheme
 
 @Composable
-fun Menu(modifier: Modifier) {
+fun Menu(navController: NavHostController, modifier: Modifier) {
     Column(modifier.background(Color.White)){
         Box(contentAlignment = Alignment.Center,
-            modifier = Modifier.height(150.dp).fillMaxWidth().clickable { /*TODO: NAVIGATION*/ }){
+            modifier = Modifier
+                .height(150.dp)
+                .fillMaxWidth()
+                .clickable { /*TODO: NAVIGATION when review page done*/ }){
             //TODO: AFFICHER LES REVIEWS
-            Text("YOUR REVIEWS")
+            Text("REVIEWS")
         }
         Divider(
             color = Color.Black,
@@ -32,7 +37,10 @@ fun Menu(modifier: Modifier) {
                 .width(1.dp)
         )
         Box(contentAlignment = Alignment.Center,
-            modifier = Modifier.height(150.dp).fillMaxWidth().clickable { /*TODO: NAVIGATION*/ }){
+            modifier = Modifier
+                .height(150.dp)
+                .fillMaxWidth()
+                .clickable { /*TODO: NAVIGATION when response page done*/ }){
             //TODO: AFFICHER LES REPONSES
             Text("YOUR RESPONSES")
         }
@@ -43,8 +51,10 @@ fun Menu(modifier: Modifier) {
                 .width(1.dp)
         )
         Box(contentAlignment = Alignment.Center,
-            modifier = Modifier.height(150.dp).fillMaxWidth().clickable { /*TODO: NAVIGATION*/ }){
-            //TODO: AFFICHER LES AMIS
+            modifier = Modifier
+                .height(150.dp)
+                .fillMaxWidth()
+                .clickable { navController.navigate("Friends") }){
             Text("YOUR FRIENDS")
         }
         Divider(
@@ -54,7 +64,10 @@ fun Menu(modifier: Modifier) {
                 .width(1.dp)
         )
         Box(contentAlignment = Alignment.Center,
-            modifier = Modifier.height(150.dp).fillMaxWidth().clickable { /*TODO: NAVIGATION*/ }){
+            modifier = Modifier
+                .height(150.dp)
+                .fillMaxWidth()
+                .clickable { /*TODO: NAVIGATION when page Like is done*/ }){
             //TODO: AFFICHER LES LIKES
             Text("YOUR LIKES")
         }
@@ -68,12 +81,12 @@ fun Menu(modifier: Modifier) {
 }
 
 @Composable
-fun ConnectedProfile() {
+fun Profile(navController: NavHostController) {
     Column {
-        Menu(modifier = Modifier
+        Menu(navController, modifier = Modifier
             .weight(1f)
             .fillMaxWidth())
-        Footer(modifier = Modifier
+        Footer(navController, modifier = Modifier
             .height(50.dp)
             .fillMaxWidth())
     }
@@ -83,6 +96,6 @@ fun ConnectedProfile() {
 @Composable
 fun ConnectedProfilePreview() {
     ReviewTheme {
-        ConnectedProfile()
+        Profile(rememberNavController())
     }
 }

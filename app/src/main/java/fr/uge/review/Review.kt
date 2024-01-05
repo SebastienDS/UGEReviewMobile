@@ -3,6 +3,7 @@ package fr.uge.review
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +34,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import fr.uge.review.ui.theme.ReviewTheme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -42,7 +45,7 @@ data class MetaData(val title: String, val user: String, val date: Date, val des
 data class Review(val metadata: MetaData, val content: String, val responses: List<Response>)
 
 @Composable
-fun Review() {
+fun Review(navController: NavHostController) {
     val review = Review(
         MetaData("Title", "User", Date(), "BLABLABLABLA"),
         "zegolzbheeguozhegzheozhgaopehgaopehgaopihegopiaehgoiahengahnegoiahnegoabhegoabegoaubegag",
@@ -50,21 +53,21 @@ fun Review() {
     )
 
     Column {
-        ReviewViewer(review, modifier = Modifier
+        ReviewViewer(navController, review, modifier = Modifier
             .weight(1f)
             .background(Color.White)
             .fillMaxWidth())
-        Footer(modifier = Modifier
+        Footer(navController, modifier = Modifier
             .height(50.dp)
             .fillMaxWidth())
     }
 }
 
 @Composable
-fun ReviewViewer(review: Review, modifier: Modifier) {
+fun ReviewViewer(navController: NavHostController, review: Review, modifier: Modifier) {
     LazyColumn(modifier) {
         item {
-            ReviewHeader(review.metadata)
+            ReviewHeader(navController, review.metadata)
             ReviewContent(review, modifier = Modifier.padding(20.dp, 10.dp))
 
             Text("31 Réponses:", Modifier.padding(3.dp))
@@ -89,14 +92,14 @@ fun ReviewViewer(review: Review, modifier: Modifier) {
 }
 
 @Composable
-fun ReviewHeader(metadata: MetaData) {
+fun ReviewHeader(navController: NavHostController, metadata: MetaData) {
     Column(Modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth()) {
            Box(modifier = Modifier.weight(3f), contentAlignment = Alignment.Center) {
                Text(metadata.title, fontSize = 30.sp)
            }
            Column(Modifier.weight(1f)) {
-               Text(metadata.user)
+               Text(metadata.user, Modifier.clickable { navController.navigate("Profile") })
                Text(SimpleDateFormat("dd/MM/yyyy").format(metadata.date))
            }
         }
@@ -136,6 +139,6 @@ fun ResponseItem(response: Response) {
 @Composable
 fun ReviewPreview() {
     ReviewTheme {
-        Review()
+        Review(rememberNavController())
     }
 }

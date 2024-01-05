@@ -25,10 +25,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import fr.uge.review.ui.theme.ReviewTheme
 
 @Composable
-fun Connection(){
+fun Connection(navController: NavHostController){
     var username by remember{ mutableStateOf("")}
     var password by remember{ mutableStateOf("")}
     Box(){
@@ -36,7 +38,9 @@ fun Connection(){
     }
     Column(modifier = Modifier.fillMaxWidth()) {
         Column(
-            modifier = Modifier.fillMaxSize().weight(1f),
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -61,15 +65,19 @@ fun Connection(){
                         .border(1.dp, Color.Black)
                         .background(Color.Transparent)
                 )
-                Text("Mot de passe oublié", color = Color.Gray, modifier = Modifier.padding(start = 16.dp).clickable { })
+                Text("Mot de passe oublié", color = Color.Gray, modifier = Modifier
+                    .padding(start = 16.dp)
+                    .clickable { /*TODO: navigate when page done*/})
             }
             Text("Connect", modifier = Modifier
                 .padding(start = 180.dp)
                 .border(1.dp, Color.Black)
                 .padding(20.dp, 15.dp)
-                .clickable { })
+                .clickable { //TODO verif connection
+                    navController.navigate("Profile")
+                })
         }
-        Footer(
+        Footer(navController,
             modifier = Modifier
                 .height(50.dp)
                 .fillMaxWidth()
@@ -83,6 +91,6 @@ fun Connection(){
 @Composable
 fun ConnectionPreview() {
     ReviewTheme {
-        Connection()
+        Connection(rememberNavController())
     }
 }

@@ -23,17 +23,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 
 @Composable
-fun Footer(modifier: Modifier) {
+fun Footer(navController: NavHostController, modifier: Modifier) {
     Row(modifier.background(Color.Gray)){
         Box(contentAlignment = Alignment.Center,
-            modifier = Modifier.weight(1f).fillMaxSize().clickable { /*TODO: NAVIGATION*/ }){
+            modifier = Modifier.weight(1f).fillMaxSize()){
             Icon(Icons.Default.Home, Modifier
                 .fillMaxHeight()
                 .padding(4.dp)) {
-                // Handle search icon click
-                //keyboardController?.hide()
+                navController.navigate("Home")
             }
         }
         Divider(
@@ -43,12 +43,11 @@ fun Footer(modifier: Modifier) {
                 .width(1.dp)
         )
         Box(contentAlignment = Alignment.Center,
-            modifier = Modifier.weight(1f).fillMaxSize().clickable { /*TODO: NAVIGATION*/ }){
+            modifier = Modifier.weight(1f).fillMaxSize()){
             Icon(Icons.Default.Search, Modifier
                 .fillMaxHeight()
                 .padding(4.dp)) {
-                // Handle search icon click
-                //keyboardController?.hide()
+                navController.navigate("Search")
             }
         }
         Divider(
@@ -58,13 +57,12 @@ fun Footer(modifier: Modifier) {
                 .width(1.dp)
         )
         Box(contentAlignment = Alignment.Center,
-            modifier = Modifier.weight(1f).fillMaxSize().clickable { /*TODO: NAVIGATION*/ }){
+            modifier = Modifier.weight(1f).fillMaxSize()){
             //TODO: METTRE UNE VRAI IMAGE ?
             Icon(Icons.Default.AccountCircle, Modifier
                 .fillMaxHeight()
                 .padding(4.dp)) {
-                // Handle search icon click
-                //keyboardController?.hide()
+                navController.navigate("Profile")
             }
         }
     }

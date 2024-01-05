@@ -1,5 +1,6 @@
 package fr.uge.review
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,15 +13,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import fr.uge.review.ui.theme.ReviewTheme
 
 @Composable
-fun Home() {
+fun Home(navController: NavHostController) {
     Column {
-        Content(modifier = Modifier
+        Content(navController, modifier = Modifier
             .weight(1f)
             .fillMaxWidth())
-        Footer(modifier = Modifier
+        Footer(navController, modifier = Modifier
             .height(50.dp)
             .fillMaxWidth())
     }
@@ -29,11 +32,11 @@ fun Home() {
 data class test(val string: String)
 
 @Composable
-fun Content(modifier: Modifier){
+fun Content(navController: NavHostController, modifier: Modifier, ){
     var list = listOf(test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"), test("cc"), test("cc"),test("cc") )
     LazyColumn(modifier = modifier){
         items(list){
-            Text(it.string)
+            Text(it.string, modifier.clickable { navController.navigate("Review") })
             Divider(
                 color = Color.Black,
                 modifier = Modifier
@@ -49,6 +52,6 @@ fun Content(modifier: Modifier){
 @Composable
 fun HomePreview() {
     ReviewTheme {
-        Home()
+        Home(rememberNavController())
     }
 }
