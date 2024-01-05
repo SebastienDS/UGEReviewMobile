@@ -1,6 +1,7 @@
 package fr.uge.review
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,6 +36,7 @@ fun Friends() {
     Column {
         FriendsViewer(friends, modifier = Modifier
             .weight(1f)
+            .background(Color.White)
             .fillMaxWidth())
         Footer(modifier = Modifier
             .height(50.dp)
@@ -45,7 +48,10 @@ fun Friends() {
 fun FriendsViewer(friends: List<Friend>, modifier: Modifier) {
     LazyColumn(modifier = modifier) {
         items(friends) {
-            FriendRow(it, Modifier.fillMaxWidth().height(25.dp))
+            FriendRow(it,
+                Modifier
+                    .fillMaxWidth()
+                    .height(25.dp))
             Divider(
                 color = Color.Black,
                 modifier = Modifier
@@ -60,16 +66,11 @@ fun FriendsViewer(friends: List<Friend>, modifier: Modifier) {
 fun FriendRow(friend: Friend, modifier: Modifier) {
     Row(modifier) {
         FriendItem(friend, Modifier.weight(1f))
-        Box(Modifier.width(150.dp), contentAlignment = Alignment.Center) {
-            IconButton(
-                onClick = {
-                    Log.i("test", "Delete $friend")
-                },
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(4.dp)
-            ) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = null)
+        Box(Modifier.width(100.dp), contentAlignment = Alignment.Center) {
+            Icon(Icons.Default.Delete, Modifier
+                .fillMaxHeight()
+                .padding(4.dp)) {
+                Log.i("test", "Delete $friend")
             }
         }
     }
@@ -78,7 +79,7 @@ fun FriendRow(friend: Friend, modifier: Modifier) {
 @Composable
 fun FriendItem(friend: Friend, modifier: Modifier) {
     Box(modifier) {
-        Text(friend.name)
+        Text(friend.name, color = Color.Black)
     }
 }
 

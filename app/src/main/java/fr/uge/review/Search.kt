@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -52,16 +53,11 @@ fun Search(){
 fun SearchComponent(modifier: Modifier) {
     var text by remember { mutableStateOf("") }
     Row(modifier.padding(10.dp).border(1.dp, Color.Black)){
-        IconButton(
-            onClick = {
-                // Handle search icon click
-                //keyboardController?.hide()
-            },
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(4.dp)
-        ) {
-            Icon(imageVector = Icons.Default.Search, contentDescription = null)
+        Icon(Icons.Default.Search, Modifier
+            .fillMaxHeight()
+            .padding(4.dp)) {
+            // Handle search icon click
+            //keyboardController?.hide()
         }
 
         Divider(
