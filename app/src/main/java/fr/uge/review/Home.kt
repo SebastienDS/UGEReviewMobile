@@ -36,7 +36,7 @@ fun Content(navController: NavHostController, modifier: Modifier, ){
     var list = listOf(test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"),test("cc"), test("cc"), test("cc"),test("cc") )
     LazyColumn(modifier = modifier){
         items(list){
-            Text(it.string, modifier.clickable { navController.navigate("Review/4") })
+            Text(it.string, modifier.clickable { navController.navigate("Review/135") })
             Divider(
                 color = Color.Black,
                 modifier = Modifier

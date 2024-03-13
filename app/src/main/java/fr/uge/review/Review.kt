@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -33,12 +35,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import fr.uge.review.dto.comment.CommentDTO
+import fr.uge.review.dto.response.ResponseDTO
 import fr.uge.review.dto.review.ReviewOneReviewDTO
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
 import retrofit2.Call
 import retrofit2.Callback
-import java.text.SimpleDateFormat
 
 @Composable
 fun Review(
@@ -92,7 +94,8 @@ fun ReviewViewer(navController: NavHostController, review: ReviewOneReviewDTO, m
             ReviewHeader(navController, review)
             ReviewContent(review, modifier = Modifier.padding(20.dp, 10.dp))
 
-            Text("31 Réponses:", Modifier.padding(3.dp))
+            val count = computeCommentsCount(review)
+            Text("$count Réponses:", Modifier.padding(3.dp))
 
             Divider(
                 color = Color.Black,
@@ -101,8 +104,9 @@ fun ReviewViewer(navController: NavHostController, review: ReviewOneReviewDTO, m
                     .height(1.dp)
             )
         }
+
         items(review.comments) {
-            CommentItem(it)
+            CommentItem(it, navController)
             Divider(
                 color = Color.Black,
                 modifier = Modifier
@@ -112,6 +116,9 @@ fun ReviewViewer(navController: NavHostController, review: ReviewOneReviewDTO, m
         }
     }
 }
+
+fun computeCommentsCount(review: ReviewOneReviewDTO): Int =
+    review.comments.sumOf { it.responses.size + 1 }
 
 @Composable
 fun ReviewHeader(navController: NavHostController, review: ReviewOneReviewDTO) {
@@ -120,44 +127,133 @@ fun ReviewHeader(navController: NavHostController, review: ReviewOneReviewDTO) {
            Box(modifier = Modifier.weight(3f), contentAlignment = Alignment.Center) {
                Text(review.title, fontSize = 30.sp)
            }
-           Column(Modifier.weight(1f)) {
-               Text(review.author.username, Modifier.clickable { navController.navigate("Profile") })
-               Text(SimpleDateFormat("dd/MM/yyyy").format(review.date))
+           Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+               Text(review.author.username, Modifier.clickable { navController.navigate("User/${review.author.id}") })
+               Text(review.date.withFormat("dd/MM/yyyy"))
+
+               val content = if (review.unitTests == null) {
+                   "Testing"
+               } else if (review.unitTests.errors.isEmpty()) {
+                   val succeeded = review.unitTests.succeededCount
+                   val total = review.unitTests.totalCount
+                   "$succeeded / $total"
+               } else {
+                   "Error"
+               }
+               Text(text = content, modifier = Modifier
+                   .let {
+                       if (review.unitTests == null) it.background(Color.Blue)
+                       if (review.unitTests!!.errors.isNotEmpty()) it.background(Color.Red)
+                       else if (review.unitTests.succeededCount == review.unitTests.totalCount) it.background(
+                           Color.Green
+                       )
+                       else it.background(Color.Yellow)
+                   }
+                   .border(1.dp, Color.Black)
+                   .padding(20.dp)
+               )
            }
         }
 
-        Text(review.commentary, modifier = Modifier.padding(20.dp, 10.dp))
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Text(review.commentary, modifier = Modifier.padding(20.dp, 10.dp))
+        }
     }
 }
 
 @Composable
 fun ReviewContent(review: ReviewOneReviewDTO, modifier: Modifier) {
-    Column {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Text(review.code, modifier = modifier
+            .fillMaxWidth()
             .border(1.dp, Color.Black)
             .padding(20.dp))
         Text(review.test, modifier = modifier
+            .fillMaxWidth()
             .border(1.dp, Color.Black)
             .padding(20.dp))
     }
 }
 
 @Composable
-fun CommentItem(comment: CommentDTO) {
+fun CommentItem(
+    comment: CommentDTO,
+    navController: NavHostController
+) {
+    Column {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.width(50.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(Icons.Default.KeyboardArrowUp, Modifier
+                    .fillMaxHeight()) {
+                    Log.i("test", "Poce blo")
+                }
+                Text("${comment.likes}")
+                Icon(Icons.Default.KeyboardArrowDown, Modifier
+                    .fillMaxHeight()) {
+                    Log.i("test", "Pas Poce blo")
+                }
+            }
+            Column(
+                Modifier
+                    .weight(1f)
+                    .padding(10.dp)) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(text = comment.author.username, modifier = Modifier.clickable { navController.navigate("User/${comment.author.id}") })
+                    Text(text = comment.date.withFormat("dd/MM/yyyy"))
+                }
+
+                Box(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
+                    Text(text = comment.content)
+                }
+            }
+        }
+
+        comment.responses.forEach {
+            Divider(
+                color = Color.Black,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp),
+            )
+
+            Box(modifier = Modifier.padding(start = 30.dp)) {
+                ResponseItem(it, navController)
+            }
+        }
+    }
+}
+
+@Composable
+fun ResponseItem(response: ResponseDTO, navController: NavHostController) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.width(50.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(Icons.Default.KeyboardArrowUp, Modifier
                 .fillMaxHeight()) {
                 Log.i("test", "Poce blo")
             }
-            Text("${comment.likes}")
+            Text("${response.likes}")
             Icon(Icons.Default.KeyboardArrowDown, Modifier
                 .fillMaxHeight()) {
                 Log.i("test", "Pas Poce blo")
             }
         }
-        Box(Modifier.weight(1f)) {
-            Text(text = comment.content, color = Color.Black, modifier = Modifier.padding(10.dp))
+        Column(
+            Modifier
+                .weight(1f)
+                .padding(10.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = response.author.username,
+                    modifier = Modifier.clickable { navController.navigate("User/${response.author.id}") })
+                Text(text = response.date.withFormat("dd/MM/yyyy"))
+            }
+
+            Box(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
+                Text(text = response.content)
+            }
         }
     }
 }
