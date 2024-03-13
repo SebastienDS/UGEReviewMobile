@@ -1,8 +1,8 @@
 package fr.uge.review
 
 import android.content.Context
-import fr.uge.review.service.ApiService
 import fr.uge.review.service.RegistrationService
+import fr.uge.review.service.ReviewService
 import fr.uge.review.service.SessionManager
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -33,8 +33,8 @@ class ApiClient(context: Context) {
         retrofit.create(RegistrationService::class.java)
     }
 
-    val apiService: ApiService by lazy {
-        retrofit.create(ApiService::class.java)
+    val reviewService: ReviewService by lazy {
+        retrofit.create(ReviewService::class.java)
     }
 }
 
