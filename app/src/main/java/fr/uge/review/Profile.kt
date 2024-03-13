@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
 
 @Composable
@@ -81,11 +82,24 @@ fun Menu(navController: NavHostController, modifier: Modifier) {
 }
 
 @Composable
-fun Profile(navController: NavHostController) {
+fun Profile(navController: NavHostController, apiClient: ApiClient, sessionManager: SessionManager) {
+    if (!sessionManager.isAuthenticated()) {
+        navController.navigate("Connection")
+    }
     Column {
         Menu(navController, modifier = Modifier
             .weight(1f)
             .fillMaxWidth())
+        Box(contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .height(150.dp)
+                .fillMaxWidth()
+                .clickable {
+                    sessionManager.clear()
+                    navController.navigate("Connection")
+                }){
+            Text("Logout")
+        }
         Footer(navController, modifier = Modifier
             .height(50.dp)
             .fillMaxWidth())
@@ -96,6 +110,5 @@ fun Profile(navController: NavHostController) {
 @Composable
 fun ConnectedProfilePreview() {
     ReviewTheme {
-        Profile(rememberNavController())
     }
 }

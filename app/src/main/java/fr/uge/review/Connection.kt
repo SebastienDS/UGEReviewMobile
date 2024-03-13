@@ -1,10 +1,10 @@
 package fr.uge.review
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,15 +27,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import fr.uge.review.dto.user.UserDataDTO
+import fr.uge.review.dto.user.UserLoginDTO
+import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @Composable
-fun Connection(navController: NavHostController){
+fun Connection(
+    navController: NavHostController,
+    apiClient: ApiClient,
+    sessionManager: SessionManager
+) {
     var username by remember{ mutableStateOf("")}
     var password by remember{ mutableStateOf("")}
-    Box(){
 
-    }
     Column(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -73,8 +81,14 @@ fun Connection(navController: NavHostController){
                 .padding(start = 180.dp)
                 .border(1.dp, Color.Black)
                 .padding(20.dp, 15.dp)
-                .clickable { //TODO verif connection
-                    navController.navigate("Profile")
+                .clickable {
+                    trylogin(apiClient, UserLoginDTO(username, password), sessionManager,
+                        onSuccess = {
+                            navController.navigate("Profile")
+                        }, onFailure = {
+                            username = ""
+                            password = ""
+                        })
                 })
         }
         Footer(navController,
@@ -83,14 +97,36 @@ fun Connection(navController: NavHostController){
                 .fillMaxWidth()
         )
     }
-
 }
 
+
+fun trylogin(apiClient: ApiClient, userLoginDTO: UserLoginDTO, sessionManager: SessionManager,
+             onSuccess: () -> Unit, onFailure: () -> Unit)  {
+    apiClient.registrationService.login(UserLoginDTO(userLoginDTO.username, userLoginDTO.password))
+        .enqueue(object : Callback<UserDataDTO> {
+            override fun onFailure(call: Call<UserDataDTO>, t: Throwable) {
+                // Error logging in
+                Log.e("UwU",  "OwO login", t)
+            }
+
+            override fun onResponse(call: Call<UserDataDTO>, response: Response<UserDataDTO>) {
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    Log.i("UwU", data.toString())
+                    sessionManager.setToken(userLoginDTO.username, userLoginDTO.password)
+                    sessionManager.setUserData(data!!)
+                    onSuccess()
+                } else {
+                    Log.e("UwU", "OwO LOGIN FAIL")
+                    onFailure()
+                }
+            }
+        })
+}
 
 @Preview(showBackground = true)
 @Composable
 fun ConnectionPreview() {
     ReviewTheme {
-        Connection(rememberNavController())
     }
 }

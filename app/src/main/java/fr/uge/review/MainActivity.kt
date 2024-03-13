@@ -7,21 +7,19 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import fr.uge.review.dto.ReviewDTO
-import fr.uge.review.service.ApiService
+import fr.uge.review.dto.user.UserDataDTO
+import fr.uge.review.dto.user.UserLoginDTO
+import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +31,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Application()
+                    val sessionManager = SessionManager(this)
+                    val apiClient = ApiClient(this)
+
+                    sessionManager.clear()
+
+                    Application(apiClient, sessionManager)
                 }
             }
         }
@@ -41,17 +44,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(apiClient: ApiClient, sessionManager: SessionManager) {
     val navController = rememberNavController()
 
-    val retrofit = Retrofit.Builder()
-        .baseUrl("http://10.0.2.2:8080/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    val service = retrofit.create(ApiService::class.java)
-
-    val call = service.fetchData()
+    val call = apiClient.apiService.fetchData()
     Log.i("Ara Ara", "UwU")
     call.enqueue(object : Callback<List<ReviewDTO>> {
         override fun onResponse(call: Call<List<ReviewDTO>>, response: Response<List<ReviewDTO>>) {
@@ -82,18 +78,18 @@ fun AppNavigation() {
             Friends(navController = navController)
         }
         composable("Connection") {
-            Connection(navController = navController)
+            Connection(navController = navController, apiClient = apiClient, sessionManager = sessionManager)
         }
         composable("Review") {
             Review(navController = navController)
         }
         composable("Profile") {
-            Profile(navController = navController)
+            Profile(navController = navController, apiClient = apiClient, sessionManager = sessionManager)
         }
     }
 }
 
 @Composable
-fun Application() {
-    AppNavigation()
+fun Application(apiClient: ApiClient, sessionManager: SessionManager) {
+    AppNavigation(apiClient, sessionManager)
 }
