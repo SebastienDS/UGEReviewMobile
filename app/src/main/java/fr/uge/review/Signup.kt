@@ -22,27 +22,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import fr.uge.review.dto.user.UserDataDTO
 import fr.uge.review.dto.user.UserLoginDTO
+import fr.uge.review.dto.user.UserSignUpDTO
 import fr.uge.review.service.SessionManager
-import fr.uge.review.ui.theme.ReviewTheme
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun Connection(
-    navController: NavHostController,
-    apiClient: ApiClient,
-    sessionManager: SessionManager
-) {
-    var username by remember{ mutableStateOf("")}
-    var password by remember{ mutableStateOf("")}
+fun Signup(navController: NavHostController, apiClient: ApiClient, sessionManager: SessionManager) {
+    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Column(
@@ -58,39 +53,46 @@ fun Connection(
                 textStyle = TextStyle.Default.copy(fontSize = 30.sp),
                 modifier = Modifier
                     .size(300.dp, 60.dp)
-                    .padding(start = 16.dp, end = 8.dp)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
                     .border(1.dp, Color.Black)
+                    .padding(horizontal = 16.dp, vertical = 5.dp)
                     .background(Color.Transparent)
             )
-            Column (Modifier.padding(bottom = 20.dp, top = 20.dp)) {
-                BasicTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    textStyle = TextStyle.Default.copy(fontSize = 30.sp),
-                    modifier = Modifier
-                        .size(300.dp, 60.dp)
-                        .padding(start = 16.dp, end = 8.dp)
-                        .border(1.dp, Color.Black)
-                        .background(Color.Transparent)
-                )
-                Text("Mot de passe oublié", color = Color.Gray, modifier = Modifier
-                    .padding(start = 16.dp)
-                    .clickable { /*TODO: navigate when page done*/})
 
-                Text("Créer un compte", color = Color.Gray, modifier = Modifier
-                    .padding(start = 16.dp, top = 5.dp)
-                    .clickable { navController.navigate("Signup") })
-            }
-            Text("Connect", modifier = Modifier
+            BasicTextField(
+                value = email,
+                onValueChange = { email = it },
+                textStyle = TextStyle.Default.copy(fontSize = 30.sp),
+                modifier = Modifier
+                    .size(300.dp, 60.dp)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .border(1.dp, Color.Black)
+                    .padding(horizontal = 16.dp, vertical = 5.dp)
+                    .background(Color.Transparent)
+            )
+
+            BasicTextField(
+                value = password,
+                onValueChange = { password = it },
+                textStyle = TextStyle.Default.copy(fontSize = 30.sp),
+                modifier = Modifier
+                    .size(300.dp, 60.dp)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .border(1.dp, Color.Black)
+                    .padding(horizontal = 16.dp, vertical = 5.dp)
+                    .background(Color.Transparent)
+            )
+            Text("Créer le compte", modifier = Modifier
                 .padding(start = 180.dp)
                 .border(1.dp, Color.Black)
                 .padding(20.dp, 15.dp)
                 .clickable {
-                    trylogin(apiClient, UserLoginDTO(username, password), sessionManager,
+                    trySignup(apiClient, UserSignUpDTO(username, email, password),
                         onSuccess = {
-                            navController.navigate("Profile")
+                            navController.navigate("Connection")
                         }, onFailure = {
                             username = ""
+                            email = ""
                             password = ""
                         })
                 })
@@ -104,33 +106,23 @@ fun Connection(
 }
 
 
-fun trylogin(apiClient: ApiClient, userLoginDTO: UserLoginDTO, sessionManager: SessionManager,
+fun trySignup(apiClient: ApiClient, userSignUpDTO: UserSignUpDTO,
              onSuccess: () -> Unit, onFailure: () -> Unit)  {
-    apiClient.registrationService.login(userLoginDTO)
-        .enqueue(object : Callback<UserDataDTO> {
-            override fun onFailure(call: Call<UserDataDTO>, t: Throwable) {
+    apiClient.userService.signup(userSignUpDTO)
+        .enqueue(object : Callback<Void> {
+            override fun onFailure(call: Call<Void>, t: Throwable) {
                 // Error logging in
-                Log.e("UwU",  "OwO login", t)
+                Log.e("UwU",  "OwO signup", t)
             }
 
-            override fun onResponse(call: Call<UserDataDTO>, response: Response<UserDataDTO>) {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    val data = response.body()
-                    Log.i("UwU", data.toString())
-                    sessionManager.setToken(userLoginDTO.username, userLoginDTO.password)
-                    sessionManager.setUserData(data!!)
+                    Log.e("UwU",  "UwU SIGNUP SUCCESS")
                     onSuccess()
                 } else {
-                    Log.e("UwU", "OwO LOGIN FAIL")
+                    Log.e("UwU", "OwO SIGNUP FAIL")
                     onFailure()
                 }
             }
         })
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ConnectionPreview() {
-    ReviewTheme {
-    }
 }
