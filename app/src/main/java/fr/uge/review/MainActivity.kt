@@ -83,6 +83,9 @@ fun AppNavigation(apiClient: ApiClient, sessionManager: SessionManager) {
         composable("Signup") {
             Signup(navController = navController, apiClient = apiClient, sessionManager = sessionManager)
         }
+        composable("CreateReview") {
+            CreateReview(navController = navController, apiClient = apiClient, sessionManager = sessionManager)
+        }
     }
 }
 
