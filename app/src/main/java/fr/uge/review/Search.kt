@@ -26,10 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
 
 @Composable
-fun Search(navController: NavHostController){
+fun Search(navController: NavHostController, sessionManager: SessionManager){
     Column {
         SearchComponent(
             Modifier
@@ -40,7 +41,7 @@ fun Search(navController: NavHostController){
                 .weight(1f)
                 .fillMaxWidth()
         )
-        Footer(navController, modifier = Modifier
+        Footer(navController, sessionManager = sessionManager, modifier = Modifier
             .height(50.dp)
             .fillMaxWidth())
     }
@@ -83,6 +84,5 @@ fun SearchComponent(modifier: Modifier) {
 @Composable
 fun SearchPreview() {
     ReviewTheme {
-        Search(rememberNavController())
     }
 }

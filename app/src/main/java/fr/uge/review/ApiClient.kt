@@ -1,7 +1,6 @@
 package fr.uge.review
 
 import android.content.Context
-import fr.uge.review.service.RegistrationService
 import fr.uge.review.service.ReviewService
 import fr.uge.review.service.SessionManager
 import fr.uge.review.service.UserService
@@ -28,10 +27,6 @@ class ApiClient(context: Context) {
         return OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(context))
             .build()
-    }
-
-    val registrationService: RegistrationService by lazy {
-        retrofit.create(RegistrationService::class.java)
     }
 
     val reviewService: ReviewService by lazy {

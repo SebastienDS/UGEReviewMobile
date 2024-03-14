@@ -25,12 +25,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
 
 data class Friend(val name: String)
 
 @Composable
-fun Friends(navController: NavHostController) {
+fun Friends(navController: NavHostController, sessionManager: SessionManager) {
     val friends = (1..100).map { Friend("Friend $it") }
 
     Column {
@@ -38,7 +39,7 @@ fun Friends(navController: NavHostController) {
             .weight(1f)
             .background(Color.White)
             .fillMaxWidth())
-        Footer(navController, modifier = Modifier
+        Footer(navController, sessionManager = sessionManager, modifier = Modifier
             .height(50.dp)
             .fillMaxWidth())
     }
@@ -79,7 +80,7 @@ fun FriendRow(navController: NavHostController, friend: Friend, modifier: Modifi
 
 @Composable
 fun FriendItem(navController: NavHostController, friend: Friend, modifier: Modifier) {
-    Box(modifier.clickable { navController.navigate("Profile") }) {
+    Box(modifier.clickable { navController.navigate("Profile/0") }) {
         Text(friend.name, color = Color.Black)
     }
 }
@@ -88,6 +89,5 @@ fun FriendItem(navController: NavHostController, friend: Friend, modifier: Modif
 @Composable
 fun FriendsPreview() {
     ReviewTheme {
-        Friends(rememberNavController())
     }
 }

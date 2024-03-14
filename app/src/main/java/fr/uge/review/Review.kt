@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -19,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,6 +45,27 @@ import fr.uge.review.ui.theme.ReviewTheme
 import retrofit2.Call
 import retrofit2.Callback
 
+fun fetchReview(reviewId: Long, apiClient: ApiClient, onSuccess: (ReviewOneReviewDTO) -> Unit, onFailure: (Throwable?) -> Unit) {
+    apiClient.reviewService.fetchReview(reviewId)
+        .enqueue(object : Callback<ReviewOneReviewDTO> {
+            override fun onFailure(call: Call<ReviewOneReviewDTO>, t: Throwable) {
+                Log.e("UwU",  "OwO review", t)
+                onFailure(t)
+            }
+
+            override fun onResponse(call: Call<ReviewOneReviewDTO>, response: retrofit2.Response<ReviewOneReviewDTO>) {
+                if (response.isSuccessful) {
+                    val review = response.body()!!
+                    Log.i("UwU", review.toString())
+                    onSuccess(review)
+                } else {
+                    Log.e("UwU", "OwO Review FAIL")
+                    onFailure(null)
+                }
+            }
+        })
+}
+
 @Composable
 fun Review(
     navController: NavHostController,
@@ -52,21 +76,7 @@ fun Review(
     var review: ReviewOneReviewDTO? by remember { mutableStateOf(null) }
 
     LaunchedEffect(reviewId) {
-        apiClient.reviewService.fetchReview(reviewId)
-            .enqueue(object : Callback<ReviewOneReviewDTO> {
-                override fun onFailure(call: Call<ReviewOneReviewDTO>, t: Throwable) {
-                    Log.e("UwU",  "OwO review", t)
-                }
-
-                override fun onResponse(call: Call<ReviewOneReviewDTO>, response: retrofit2.Response<ReviewOneReviewDTO>) {
-                    if (response.isSuccessful) {
-                        review = response.body()!!
-                        Log.i("UwU", review.toString())
-                    } else {
-                        Log.e("UwU", "OwO Review FAIL")
-                    }
-                }
-            })
+        fetchReview(reviewId, apiClient, { review = it }, {})
     }
 
     Column {
@@ -76,12 +86,16 @@ fun Review(
             .fillMaxWidth()
 
         if (review == null) {
-            Box(modifier = modifier)
+            Box(modifier = modifier, contentAlignment = Alignment.Center) {
+                Icon(Icons.Default.Refresh, Modifier.size(100.dp)) {
+                    Log.i("UwU", "Refresh")
+                }
+            }
         } else  {
             ReviewViewer(navController, review!!, modifier = modifier)
         }
 
-        Footer(navController, modifier = Modifier
+        Footer(navController, sessionManager = sessionManager, modifier = Modifier
             .height(50.dp)
             .fillMaxWidth())
     }

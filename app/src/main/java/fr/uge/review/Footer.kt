@@ -24,9 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import fr.uge.review.service.SessionManager
 
 @Composable
-fun Footer(navController: NavHostController, modifier: Modifier) {
+fun Footer(navController: NavHostController, sessionManager: SessionManager, modifier: Modifier) {
     Row(modifier.background(Color.Gray)){
         Box(contentAlignment = Alignment.Center,
             modifier = Modifier.weight(1f).fillMaxSize()){
@@ -62,7 +63,11 @@ fun Footer(navController: NavHostController, modifier: Modifier) {
             Icon(Icons.Default.AccountCircle, Modifier
                 .fillMaxHeight()
                 .padding(4.dp)) {
-                navController.navigate("Profile")
+                if (sessionManager.isAuthenticated()) {
+                    navController.navigate("Profile/${sessionManager.getUserId()}")
+                } else {
+                    navController.navigate("Connection")
+                }
             }
         }
     }

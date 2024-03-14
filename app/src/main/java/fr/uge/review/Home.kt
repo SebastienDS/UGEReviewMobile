@@ -15,15 +15,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
 
 @Composable
-fun Home(navController: NavHostController) {
+fun Home(navController: NavHostController, sessionManager: SessionManager) {
     Column {
         Content(navController, modifier = Modifier
             .weight(1f)
             .fillMaxWidth())
-        Footer(navController, modifier = Modifier
+        Footer(navController, sessionManager = sessionManager, modifier = Modifier
             .height(50.dp)
             .fillMaxWidth())
     }
@@ -52,6 +53,5 @@ fun Content(navController: NavHostController, modifier: Modifier, ){
 @Composable
 fun HomePreview() {
     ReviewTheme {
-        Home(rememberNavController())
     }
 }

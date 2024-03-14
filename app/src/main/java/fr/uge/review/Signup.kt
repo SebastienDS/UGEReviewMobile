@@ -97,7 +97,7 @@ fun Signup(navController: NavHostController, apiClient: ApiClient, sessionManage
                         })
                 })
         }
-        Footer(navController,
+        Footer(navController, sessionManager = sessionManager,
             modifier = Modifier
                 .height(50.dp)
                 .fillMaxWidth()

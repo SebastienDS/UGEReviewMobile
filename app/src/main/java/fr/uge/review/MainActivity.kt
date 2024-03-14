@@ -47,13 +47,13 @@ fun AppNavigation(apiClient: ApiClient, sessionManager: SessionManager) {
         startDestination = "Home"
     ) {
         composable("Home") {
-            Home(navController = navController)
+            Home(navController = navController, sessionManager)
         }
         composable("Search") {
-            Search(navController = navController)
+            Search(navController = navController, sessionManager)
         }
         composable("Friends") {
-            Friends(navController = navController)
+            Friends(navController = navController, sessionManager)
         }
         composable("Connection") {
             Connection(navController = navController, apiClient = apiClient, sessionManager = sessionManager)
@@ -69,8 +69,16 @@ fun AppNavigation(apiClient: ApiClient, sessionManager: SessionManager) {
             val reviewId = it.arguments!!.getLong("reviewId")
             Review(navController = navController, reviewId = reviewId, apiClient = apiClient, sessionManager = sessionManager)
         }
-        composable("Profile") {
-            Profile(navController = navController, apiClient = apiClient, sessionManager = sessionManager)
+        composable(
+            route = "Profile/{userId}",
+            arguments = listOf(
+                navArgument("userId") {
+                    type = NavType.LongType
+                }
+            )
+        ) {
+            val userId = it.arguments!!.getLong("userId")
+            Profile(navController = navController, userId = userId, apiClient = apiClient, sessionManager = sessionManager)
         }
         composable("Signup") {
             Signup(navController = navController, apiClient = apiClient, sessionManager = sessionManager)

@@ -88,14 +88,14 @@ fun Connection(
                 .clickable {
                     trylogin(apiClient, UserLoginDTO(username, password), sessionManager,
                         onSuccess = {
-                            navController.navigate("Profile")
+                            navController.navigate("Profile/${sessionManager.getUserId()}")
                         }, onFailure = {
                             username = ""
                             password = ""
                         })
                 })
         }
-        Footer(navController,
+        Footer(navController, sessionManager = sessionManager,
             modifier = Modifier
                 .height(50.dp)
                 .fillMaxWidth()
@@ -106,7 +106,7 @@ fun Connection(
 
 fun trylogin(apiClient: ApiClient, userLoginDTO: UserLoginDTO, sessionManager: SessionManager,
              onSuccess: () -> Unit, onFailure: () -> Unit)  {
-    apiClient.registrationService.login(userLoginDTO)
+    apiClient.userService.login(userLoginDTO)
         .enqueue(object : Callback<UserDataDTO> {
             override fun onFailure(call: Call<UserDataDTO>, t: Throwable) {
                 // Error logging in
