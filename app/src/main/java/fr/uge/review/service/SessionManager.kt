@@ -16,9 +16,8 @@ class SessionManager(context: Context) {
         const val USER_ROLE = "user_role"
     }
 
-    private fun createToken(username: String, password: String): String {
-        return "Basic " + Credentials.basic(username, password)
-    }
+    private fun createToken(username: String, password: String): String =
+        Credentials.basic(username, password)
 
     fun setToken(username: String, password: String) {
         val token = createToken(username, password)
@@ -27,9 +26,7 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
-    fun getAuthToken(): String? {
-        return prefs.getString(AUTH_TOKEN, null)
-    }
+    fun getAuthToken(): String? = prefs.getString(AUTH_TOKEN, null)
 
     fun isAuthenticated(): Boolean = getAuthToken() != null
 
@@ -40,16 +37,12 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
-    fun getUserId(): Long? {
-        return prefs.getString(USER_ID, null)?.toLongOrNull()
-    }
+    fun getUserId(): Long = prefs.getLong(USER_ID, -1)
 
     fun getUserRole(): Role? {
         val role = prefs.getString(USER_ROLE, null)
         return if (role == null) null else Role.valueOf(role)
     }
 
-    fun clear() {
-        prefs.edit().clear().apply()
-    }
+    fun clear() = prefs.edit().clear().apply()
 }
