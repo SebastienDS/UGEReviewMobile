@@ -58,7 +58,7 @@ fun Connection(
                 textStyle = TextStyle.Default.copy(fontSize = 30.sp),
                 modifier = Modifier
                     .size(300.dp, 60.dp)
-                    .padding(start = 16.dp, end = 8.dp)
+                    .padding(16.dp, 8.dp)
                     .border(1.dp, Color.Black)
                     .background(Color.Transparent)
             )
@@ -69,7 +69,7 @@ fun Connection(
                     textStyle = TextStyle.Default.copy(fontSize = 30.sp),
                     modifier = Modifier
                         .size(300.dp, 60.dp)
-                        .padding(start = 16.dp, end = 8.dp)
+                        .padding(16.dp, 8.dp)
                         .border(1.dp, Color.Black)
                         .background(Color.Transparent)
                 )
