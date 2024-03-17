@@ -1,8 +1,10 @@
 package fr.uge.review.service
 
+import androidx.compose.foundation.pager.PageSize
 import fr.uge.review.dto.review.CreateReviewDTO
 import fr.uge.review.dto.review.ReviewCreatedDTO
 import fr.uge.review.dto.review.ReviewOneReviewDTO
+import fr.uge.review.dto.review.ReviewsDTO
 import fr.uge.review.dto.user.UserDataDTO
 import fr.uge.review.dto.user.UserLoginDTO
 import okhttp3.MultipartBody
@@ -12,8 +14,12 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ReviewService {
+
+    @GET("/api/v1/reviews")
+    fun fetchReviews(@Query("pageNumber") pageNumber: Int, @Query("pageSize") pageSize: Int): Call<List<ReviewsDTO>>
 
     @GET("/api/v1/reviews/{reviewId}")
     fun fetchReview(@Path("reviewId") reviewId: Long): Call<ReviewOneReviewDTO>

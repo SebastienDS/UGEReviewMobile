@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,12 +26,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import fr.uge.review.dto.review.ReviewsDTO
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
 
 @Composable
-fun Search(navController: NavHostController, sessionManager: SessionManager){
+fun Search(navController: NavHostController, sessionManager: SessionManager, apiClient: ApiClient){
+    var reviews: List<ReviewsDTO>? by remember { mutableStateOf(null) }
+    var page by remember { mutableIntStateOf(0) }
+    fetchReviews(page, apiClient, { reviews = it }, {})
     Column {
         SearchComponent(
             Modifier
@@ -39,8 +43,16 @@ fun Search(navController: NavHostController, sessionManager: SessionManager){
         Content(
             navController = navController, modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth()
-        )
+                .fillMaxWidth(),
+                reviews,
+            {
+                page--
+                fetchReviews(page, apiClient, {reviews = it}, {})
+            }
+        ) {
+            page++
+            fetchReviews(page, apiClient, {reviews = it}, {})
+        }
         Footer(navController, sessionManager = sessionManager, modifier = Modifier
             .height(50.dp)
             .fillMaxWidth())

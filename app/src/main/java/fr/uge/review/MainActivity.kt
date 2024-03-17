@@ -1,6 +1,7 @@
 package fr.uge.review
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +14,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import fr.uge.review.dto.review.ReviewOneReviewDTO
+import fr.uge.review.dto.review.ReviewsDTO
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
+import retrofit2.Call
+import retrofit2.Callback
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,10 +50,10 @@ fun AppNavigation(apiClient: ApiClient, sessionManager: SessionManager) {
         startDestination = "Home"
     ) {
         composable("Home") {
-            Home(navController = navController, sessionManager)
+            Home(navController = navController, sessionManager, apiClient)
         }
         composable("Search") {
-            Search(navController = navController, sessionManager)
+            Search(navController = navController, sessionManager, apiClient)
         }
         composable("Friends") {
             Friends(navController = navController, sessionManager)
