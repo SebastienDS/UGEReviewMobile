@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -49,6 +50,22 @@ fun Footer(navController: NavHostController, sessionManager: SessionManager, mod
                 .fillMaxHeight()
                 .padding(4.dp)) {
                 navController.navigate("Search")
+            }
+        }
+        if (sessionManager.isAuthenticated())  {
+            Divider(
+                color = Color.Black,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(1.dp)
+            )
+            Box(contentAlignment = Alignment.Center,
+                modifier = Modifier.weight(1f).fillMaxSize()){
+                Icon(Icons.Default.Notifications, Modifier
+                    .fillMaxHeight()
+                    .padding(4.dp)) {
+                    navController.navigate("Notifications")
+                }
             }
         }
         Divider(
