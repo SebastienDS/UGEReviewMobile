@@ -21,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -69,7 +70,10 @@ fun Friends(
 ) {
     var friends: List<UserDTO>? by remember { mutableStateOf(null) }
     var page by remember { mutableIntStateOf(0) }
-    fetchUserFriends(userId, page, apiClient, {friends = it}, {})
+
+    LaunchedEffect(page, userId) {
+        fetchUserFriends(userId, page, apiClient, { friends = it }, {})
+    }
 
     Column {
         FriendsViewer(navController, friends, modifier = Modifier

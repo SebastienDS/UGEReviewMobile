@@ -17,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +60,10 @@ fun fetchReviews(page: Int, apiClient: ApiClient, onSuccess: (List<ReviewsDTO>) 
 fun Home(navController: NavHostController, sessionManager: SessionManager, apiClient: ApiClient) {
     var reviews: List<ReviewsDTO>? by remember { mutableStateOf(null) }
     var page by remember { mutableIntStateOf(0) }
-    fetchReviews(page, apiClient, { reviews = it }, {})
+
+    LaunchedEffect(page) {
+        fetchReviews(page, apiClient, { reviews = it }, {})
+    }
 
     Column {
         if (sessionManager.isAuthenticated()) {

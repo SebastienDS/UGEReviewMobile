@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +50,10 @@ fun UserResponses(
 ){
     var responses: List<ResponseUserDTO>? by remember { mutableStateOf(null) }
     var page by remember { mutableIntStateOf(0) }
-    fetchUserResponses(userId, page, apiClient, {responses = it}, {})
+
+    LaunchedEffect(page, userId) {
+        fetchUserResponses(userId, page, apiClient, { responses = it }, {})
+    }
 
     Column {
         Content(navController, modifier = Modifier

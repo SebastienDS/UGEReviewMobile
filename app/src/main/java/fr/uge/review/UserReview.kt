@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -48,7 +49,10 @@ fun UserReviews(
 ){
     var reviews: List<ReviewsDTO>? by remember { mutableStateOf(null) }
     var page by remember { mutableIntStateOf(0) }
-    fetchUserReviews(userId, page, apiClient, {reviews = it}, {})
+
+    LaunchedEffect(page, userId) {
+        fetchUserReviews(userId, page, apiClient, { reviews = it }, {})
+    }
 
     Column {
         Content(navController, modifier = Modifier

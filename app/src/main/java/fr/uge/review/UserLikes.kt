@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -50,7 +51,10 @@ fun UserLikes(
 ){
     var likes: List<LikeDTO>? by remember { mutableStateOf(null) }
     var page by remember { mutableIntStateOf(0) }
-    fetchUserLikes(userId, page, apiClient, {likes = it}, {})
+
+    LaunchedEffect(page, userId) {
+        fetchUserLikes(userId, page, apiClient, { likes = it }, {})
+    }
 
     Column {
         Content(navController, modifier = Modifier
