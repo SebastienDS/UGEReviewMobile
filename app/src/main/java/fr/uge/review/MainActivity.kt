@@ -59,6 +59,15 @@ fun AppNavigation(apiClient: ApiClient, sessionManager: SessionManager) {
             val userId = it.arguments!!.getLong("userId")
             UserReviews(navController = navController, userId, sessionManager, apiClient)
         }
+        composable(route = "Users/{userId}/comments",
+            arguments = listOf(
+                navArgument("userId") {
+                    type = NavType.LongType
+                }
+            )) {
+            val userId = it.arguments!!.getLong("userId")
+            UserComments(navController = navController, userId, sessionManager, apiClient)
+        }
         composable("Friends") {
             Friends(navController = navController, sessionManager)
         }

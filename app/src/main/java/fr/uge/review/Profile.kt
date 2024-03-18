@@ -3,6 +3,7 @@ package fr.uge.review
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,10 +28,11 @@ import retrofit2.Response
 
 @Composable
 fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
-    Column(modifier.background(Color.White)){
+
+    Column(modifier.background(Color.White).verticalScroll(state = rememberScrollState())){
         Box(contentAlignment = Alignment.Center,
             modifier = Modifier
-                .height(150.dp)
+                .height(100.dp)
                 .fillMaxWidth()
                 .clickable { navController.navigate("Users/$userId/reviews") }){
             Text("REVIEWS")
@@ -41,11 +45,24 @@ fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
         )
         Box(contentAlignment = Alignment.Center,
             modifier = Modifier
-                .height(150.dp)
+                .height(100.dp)
+                .fillMaxWidth()
+                .clickable { navController.navigate("Users/$userId/comments") }){
+            Text("Comments")
+        }
+        Divider(
+            color = Color.Black,
+            modifier = Modifier
+                .fillMaxWidth()
+                .width(1.dp)
+        )
+        Box(contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .height(100.dp)
                 .fillMaxWidth()
                 .clickable { /*TODO: NAVIGATION when response page done*/ }){
             //TODO: AFFICHER LES REPONSES
-            Text("YOUR RESPONSES")
+            Text("RESPONSES")
         }
         Divider(
             color = Color.Black,
@@ -55,10 +72,10 @@ fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
         )
         Box(contentAlignment = Alignment.Center,
             modifier = Modifier
-                .height(150.dp)
+                .height(100.dp)
                 .fillMaxWidth()
                 .clickable { navController.navigate("Friends") }){
-            Text("YOUR FRIENDS")
+            Text("FRIENDS")
         }
         Divider(
             color = Color.Black,
@@ -68,11 +85,11 @@ fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
         )
         Box(contentAlignment = Alignment.Center,
             modifier = Modifier
-                .height(150.dp)
+                .height(100.dp)
                 .fillMaxWidth()
                 .clickable { /*TODO: NAVIGATION when page Like is done*/ }){
             //TODO: AFFICHER LES LIKES
-            Text("YOUR LIKES")
+            Text("LIKES")
         }
         Divider(
             color = Color.Black,

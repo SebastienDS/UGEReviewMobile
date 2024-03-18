@@ -1,5 +1,6 @@
 package fr.uge.review.service
 
+import fr.uge.review.dto.comment.CommentUserDTO
 import fr.uge.review.dto.review.ReviewsDTO
 import fr.uge.review.dto.user.UserDataDTO
 import fr.uge.review.dto.user.UserLoginDTO
@@ -27,4 +28,7 @@ interface UserService {
 
     @GET("/api/v1/users/{userId}/reviews")
     fun fetchUserReviews(@Path("userId") userId: Long, @Query("pageNumber") page: Int, @Query("pageSize") pageSize: Int): Call<List<ReviewsDTO>>
+
+    @GET("/api/v1/users/{userId}/comments")
+    fun fetchUserComments(@Path("userId") userId: Long, @Query("pageNumber") page: Int, @Query("pageSize") pageSize: Int): Call<List<CommentUserDTO>>
 }
