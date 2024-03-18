@@ -26,6 +26,9 @@ interface ReviewService {
 
     @POST("/api/v1/createReview")
     fun createReview(@Body body: RequestBody): Call<ReviewCreatedDTO>
+
+    @GET("/api/v1/reviews")
+    fun searchReviews(@Query("search") search: String, @Query("pageNumber") pageNumber: Int, @Query("pageSize") pageSize: Int): Call<List<ReviewsDTO>>
 }
 
 fun ReviewService.createReview(review: CreateReviewDTO): Call<ReviewCreatedDTO> {

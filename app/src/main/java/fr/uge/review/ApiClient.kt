@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiClient(context: Context) {
     companion object {
-        private const val BASE_URL = "http://10.0.2.2:8080/"  // localhost on emulator
+        private const val BASE_URL = "http://localhost:8080/"  // localhost on emulator
     }
 
     private val retrofit by lazy {
