@@ -75,11 +75,9 @@ fun Home(navController: NavHostController, sessionManager: SessionManager, apiCl
             reviews = reviews,
             previous = {
                 page--
-                fetchReviews(page, apiClient, { reviews = it }, {})
             },
             next = {
                 page++
-                fetchReviews(page, apiClient, { reviews = it }, {})
             })
         Footer(navController, sessionManager = sessionManager, modifier = Modifier
             .height(50.dp)
@@ -105,7 +103,7 @@ fun Content(navController: NavHostController, modifier: Modifier, reviews: List<
                 .fillMaxWidth()
                 .height(1.dp)
         )
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = modifier.fillMaxSize()) {
             LazyColumn(modifier = Modifier
                 .weight(0.8f)
                 .fillMaxSize()) {

@@ -13,33 +13,24 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import fr.uge.review.dto.review.CreateReviewDTO
-import fr.uge.review.dto.review.ReviewCreatedDTO
-import fr.uge.review.dto.user.UserDataDTO
-import fr.uge.review.dto.user.UserLoginDTO
 import fr.uge.review.service.SessionManager
-import fr.uge.review.service.createReview
-import fr.uge.review.ui.theme.ReviewTheme
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun Menu(navController: NavHostController, modifier: Modifier) {
+fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
     Column(modifier.background(Color.White)){
         Box(contentAlignment = Alignment.Center,
             modifier = Modifier
                 .height(150.dp)
                 .fillMaxWidth()
-                .clickable { /*TODO: NAVIGATION when review page done*/ }){
-            //TODO: AFFICHER LES REVIEWS
+                .clickable { navController.navigate("Users/$userId/reviews") }){
             Text("REVIEWS")
         }
         Divider(
@@ -104,7 +95,7 @@ fun Profile(
     }
 
     Column {
-        Menu(navController, modifier = Modifier
+        Menu(navController, userId, modifier = Modifier
             .weight(1f)
             .fillMaxWidth())
 

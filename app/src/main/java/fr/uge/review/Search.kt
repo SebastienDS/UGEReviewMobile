@@ -47,11 +47,9 @@ fun Search(navController: NavHostController, sessionManager: SessionManager, api
                 reviews,
             {
                 page--
-                fetchReviews(page, apiClient, {reviews = it}, {})
             }
         ) {
             page++
-            fetchReviews(page, apiClient, {reviews = it}, {})
         }
         Footer(navController, sessionManager = sessionManager, modifier = Modifier
             .height(50.dp)
