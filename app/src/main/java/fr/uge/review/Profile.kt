@@ -86,9 +86,8 @@ fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
             modifier = Modifier
                 .height(100.dp)
                 .fillMaxWidth()
-                .clickable { /*TODO: NAVIGATION when page Like is done*/ }){
-            //TODO: AFFICHER LES LIKES
-            Text("LIKES")
+                .clickable { navController.navigate("Users/$userId/likes") }){
+            Text("Likes")
         }
         Divider(
             color = Color.Black,

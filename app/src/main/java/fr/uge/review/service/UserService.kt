@@ -1,6 +1,7 @@
 package fr.uge.review.service
 
 import fr.uge.review.dto.comment.CommentUserDTO
+import fr.uge.review.dto.like.LikeDTO
 import fr.uge.review.dto.response.ResponseUserDTO
 import fr.uge.review.dto.review.ReviewsDTO
 import fr.uge.review.dto.user.UserDTO
@@ -39,5 +40,8 @@ interface UserService {
 
     @GET("/api/v1/users/{userId}/follows")
     fun fetchUserFriends(@Path("userId") userId: Long, @Query("pageNumber") page: Int, @Query("pageSize") pageSize: Int): Call<List<UserDTO>>
+
+    @GET("/api/v1/users/{userId}/likes")
+    fun fetchUserLikes(@Path("userId") userId: Long, @Query("pageNumber") page: Int, @Query("pageSize") pageSize: Int): Call<List<LikeDTO>>
 
 }
