@@ -35,7 +35,7 @@ fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
                 .height(100.dp)
                 .fillMaxWidth()
                 .clickable { navController.navigate("Users/$userId/reviews") }){
-            Text("REVIEWS")
+            Text("Revue")
         }
         Divider(
             color = Color.Black,
@@ -48,7 +48,7 @@ fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
                 .height(100.dp)
                 .fillMaxWidth()
                 .clickable { navController.navigate("Users/$userId/comments") }){
-            Text("Comments")
+            Text("Commentaire")
         }
         Divider(
             color = Color.Black,
@@ -60,9 +60,8 @@ fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
             modifier = Modifier
                 .height(100.dp)
                 .fillMaxWidth()
-                .clickable { /*TODO: NAVIGATION when response page done*/ }){
-            //TODO: AFFICHER LES REPONSES
-            Text("RESPONSES")
+                .clickable { navController.navigate("Users/$userId/responses") }){
+            Text("Réponse")
         }
         Divider(
             color = Color.Black,
@@ -74,8 +73,8 @@ fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
             modifier = Modifier
                 .height(100.dp)
                 .fillMaxWidth()
-                .clickable { navController.navigate("Friends") }){
-            Text("FRIENDS")
+                .clickable { navController.navigate("Users/$userId/friends") }){
+            Text("Amis")
         }
         Divider(
             color = Color.Black,

@@ -14,23 +14,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import fr.uge.review.dto.comment.CommentUserDTO
+import fr.uge.review.dto.response.ResponseUserDTO
 import fr.uge.review.service.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 
-fun fetchUserComments(userId: Long, page: Int, apiClient: ApiClient, onSuccess: (List<CommentUserDTO>) -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.userService.fetchUserComments(userId, page, 20)
-        .enqueue(object : Callback<List<CommentUserDTO>> {
-            override fun onFailure(call: Call<List<CommentUserDTO>>, t: Throwable) {
+fun fetchUserResponses(userId: Long, page: Int, apiClient: ApiClient, onSuccess: (List<ResponseUserDTO>) -> Unit, onFailure: (Throwable?) -> Unit) {
+    apiClient.userService.fetchUserResponses(userId, page, 20)
+        .enqueue(object : Callback<List<ResponseUserDTO>> {
+            override fun onFailure(call: Call<List<ResponseUserDTO>>, t: Throwable) {
                 Log.e("UwU",  "OwO review", t)
                 onFailure(t)
             }
 
-            override fun onResponse(call: Call<List<CommentUserDTO>>, response: retrofit2.Response<List<CommentUserDTO>>) {
+            override fun onResponse(call: Call<List<ResponseUserDTO>>, response: retrofit2.Response<List<ResponseUserDTO>>) {
                 if (response.isSuccessful) {
-                    val comments = response.body()!!
-                    Log.i("UwU", comments.toString())
-                    onSuccess(comments)
+                    val responseDTO = response.body()!!
+                    Log.i("UwU", responseDTO.toString())
+                    onSuccess(responseDTO)
                 } else {
                     Log.e("UwU", "OwO Review FAIL")
                     onFailure(null)
@@ -40,21 +41,21 @@ fun fetchUserComments(userId: Long, page: Int, apiClient: ApiClient, onSuccess: 
 }
 
 @Composable
-fun UserComments(
+fun UserResponses(
     navController: NavHostController,
     userId: Long,
     sessionManager: SessionManager,
     apiClient: ApiClient
 ){
-    var comments: List<CommentUserDTO>? by remember { mutableStateOf(null) }
+    var responses: List<ResponseUserDTO>? by remember { mutableStateOf(null) }
     var page by remember { mutableIntStateOf(0) }
-    fetchUserComments(userId, page, apiClient, {comments = it}, {})
+    fetchUserResponses(userId, page, apiClient, {responses = it}, {})
 
     Column {
         Content(navController, modifier = Modifier
             .weight(1f)
             .fillMaxWidth(),
-            showAbles = comments,
+            showAbles = responses,
             previous = {
                 page--
             },
