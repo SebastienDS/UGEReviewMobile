@@ -1,5 +1,7 @@
 package fr.uge.review
 
+import fr.uge.review.dto.like.LikeDTO
+
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,24 +16,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import fr.uge.review.dto.review.ReviewsDTO
+import fr.uge.review.dto.comment.CommentUserDTO
 import fr.uge.review.service.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 
-fun fetchUserReviews(userId: Long, page: Int, apiClient: ApiClient, onSuccess: (List<ReviewsDTO>) -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.userService.fetchUserReviews(userId, page, 20)
-        .enqueue(object : Callback<List<ReviewsDTO>> {
-            override fun onFailure(call: Call<List<ReviewsDTO>>, t: Throwable) {
+fun fetchUserLikes(userId: Long, page: Int, apiClient: ApiClient, onSuccess: (List<LikeDTO>) -> Unit, onFailure: (Throwable?) -> Unit) {
+    apiClient.userService.fetchUserLikes(userId, page, 20)
+        .enqueue(object : Callback<List<LikeDTO>> {
+            override fun onFailure(call: Call<List<LikeDTO>>, t: Throwable) {
                 Log.e("UwU",  "OwO review", t)
                 onFailure(t)
             }
 
-            override fun onResponse(call: Call<List<ReviewsDTO>>, response: retrofit2.Response<List<ReviewsDTO>>) {
+            override fun onResponse(call: Call<List<LikeDTO>>, response: retrofit2.Response<List<LikeDTO>>) {
                 if (response.isSuccessful) {
-                    val reviews = response.body()!!
-                    Log.i("UwU", reviews.toString())
-                    onSuccess(reviews)
+                    val likes = response.body()!!
+                    Log.i("UwU", likes.toString())
+                    onSuccess(likes)
                 } else {
                     Log.e("UwU", "OwO Review FAIL")
                     onFailure(null)
@@ -41,24 +43,24 @@ fun fetchUserReviews(userId: Long, page: Int, apiClient: ApiClient, onSuccess: (
 }
 
 @Composable
-fun UserReviews(
+fun UserLikes(
     navController: NavHostController,
     userId: Long,
     sessionManager: SessionManager,
     apiClient: ApiClient
 ){
-    var reviews: List<ReviewsDTO>? by remember { mutableStateOf(null) }
+    var likes: List<LikeDTO>? by remember { mutableStateOf(null) }
     var page by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(page, userId) {
-        fetchUserReviews(userId, page, apiClient, { reviews = it }, {})
+        fetchUserLikes(userId, page, apiClient, { likes = it }, {})
     }
 
     Column {
         Content(navController, modifier = Modifier
             .weight(1f)
             .fillMaxWidth(),
-            showAbles = reviews,
+            showAbles = likes,
             previous = {
                 page--
             },

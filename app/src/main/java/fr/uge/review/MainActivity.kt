@@ -59,8 +59,41 @@ fun AppNavigation(apiClient: ApiClient, sessionManager: SessionManager) {
             val userId = it.arguments!!.getLong("userId")
             UserReviews(navController = navController, userId, sessionManager, apiClient)
         }
-        composable("Friends") {
-            Friends(navController = navController, sessionManager)
+        composable(route = "Users/{userId}/comments",
+            arguments = listOf(
+                navArgument("userId") {
+                    type = NavType.LongType
+                }
+            )) {
+            val userId = it.arguments!!.getLong("userId")
+            UserComments(navController = navController, userId, sessionManager, apiClient)
+        }
+        composable(route = "Users/{userId}/responses",
+            arguments = listOf(
+                navArgument("userId") {
+                    type = NavType.LongType
+                }
+            )) {
+            val userId = it.arguments!!.getLong("userId")
+            UserResponses(navController = navController, userId, sessionManager, apiClient)
+        }
+        composable(route = "Users/{userId}/friends",
+            arguments = listOf(
+                navArgument("userId") {
+                    type = NavType.LongType
+                }
+            )) {
+            val userId = it.arguments!!.getLong("userId")
+            Friends(navController = navController, userId, sessionManager, apiClient)
+        }
+        composable(route = "Users/{userId}/likes",
+            arguments = listOf(
+                navArgument("userId") {
+                    type = NavType.LongType
+                }
+            )) {
+            val userId = it.arguments!!.getLong("userId")
+            UserLikes(navController = navController, userId, sessionManager, apiClient)
         }
         composable("Connection") {
             Connection(navController = navController, apiClient = apiClient, sessionManager = sessionManager)
@@ -77,7 +110,7 @@ fun AppNavigation(apiClient: ApiClient, sessionManager: SessionManager) {
             Review(navController = navController, reviewId = reviewId, apiClient = apiClient, sessionManager = sessionManager)
         }
         composable(
-            route = "Profile/{userId}",
+            route = "Users/{userId}",
             arguments = listOf(
                 navArgument("userId") {
                     type = NavType.LongType

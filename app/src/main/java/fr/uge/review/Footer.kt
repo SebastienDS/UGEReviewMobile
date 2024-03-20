@@ -76,12 +76,11 @@ fun Footer(navController: NavHostController, sessionManager: SessionManager, mod
         )
         Box(contentAlignment = Alignment.Center,
             modifier = Modifier.weight(1f).fillMaxSize()){
-            //TODO: METTRE UNE VRAI IMAGE ?
             Icon(Icons.Default.AccountCircle, Modifier
                 .fillMaxHeight()
                 .padding(4.dp)) {
                 if (sessionManager.isAuthenticated()) {
-                    navController.navigate("Profile/${sessionManager.getUserId()}")
+                    navController.navigate("Users/${sessionManager.getUserId()}")
                 } else {
                     navController.navigate("Connection")
                 }

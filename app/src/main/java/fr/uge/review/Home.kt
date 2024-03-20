@@ -17,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +60,10 @@ fun fetchReviews(page: Int, apiClient: ApiClient, onSuccess: (List<ReviewsDTO>) 
 fun Home(navController: NavHostController, sessionManager: SessionManager, apiClient: ApiClient) {
     var reviews: List<ReviewsDTO>? by remember { mutableStateOf(null) }
     var page by remember { mutableIntStateOf(0) }
-    fetchReviews(page, apiClient, { reviews = it }, {})
+
+    LaunchedEffect(page) {
+        fetchReviews(page, apiClient, { reviews = it }, {})
+    }
 
     Column {
         if (sessionManager.isAuthenticated()) {
@@ -72,7 +76,7 @@ fun Home(navController: NavHostController, sessionManager: SessionManager, apiCl
         Content(navController, modifier = Modifier
             .weight(1f)
             .fillMaxWidth(),
-            reviews = reviews,
+            showAbles = reviews,
             previous = {
                 page--
             },
@@ -85,12 +89,10 @@ fun Home(navController: NavHostController, sessionManager: SessionManager, apiCl
     }
 }
 
-data class test(val string: String)
-
 @Composable
-fun Content(navController: NavHostController, modifier: Modifier, reviews: List<ReviewsDTO>?,
+fun Content(navController: NavHostController, modifier: Modifier, showAbles: List<ShowAble>?,
             previous: () -> Unit, next: () -> Unit ){
-    if(reviews == null){
+    if(showAbles == null){
         Box(modifier = modifier, contentAlignment = Alignment.Center) {
             Icon(Icons.Default.Refresh, Modifier.size(100.dp)) {
                 Log.i("UwU", "Refresh")
@@ -107,21 +109,22 @@ fun Content(navController: NavHostController, modifier: Modifier, reviews: List<
             LazyColumn(modifier = Modifier
                 .weight(0.8f)
                 .fillMaxSize()) {
-                items(reviews) { review ->
+                items(showAbles) { showAble ->
                     Column(modifier = Modifier
                         .height(80.dp)
                         .fillMaxSize()) {
-                        Row(modifier = Modifier.weight(1f).clickable { navController.navigate("Review/${review.id}") }){
+                        Row(modifier = Modifier.weight(1f).clickable {
+                            navController.navigate("Review/${showAble.reviewId()}") }){
                             Text(
-                                text = review.title,
+                                text = showAble.content(),
                             )
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalAlignment = Alignment.End
 
                             ) {
-                                Text(text = review.author.username, modifier = Modifier.clickable { navController.navigate("Users/${review.author.id}") })
-                                Text(text = review.date.withFormat("dd/MM/yyyy"))
+                                Text(text = showAble.author.username, modifier = Modifier.clickable { navController.navigate("Users/${showAble.author.id}") })
+                                Text(text = showAble.date.withFormat("dd/MM/yyyy hh:mm:ss"))
                             }
                         }
                         Divider(
