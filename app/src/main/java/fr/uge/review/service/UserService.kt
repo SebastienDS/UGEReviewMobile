@@ -6,7 +6,9 @@ import fr.uge.review.dto.response.ResponseUserDTO
 import fr.uge.review.dto.review.ReviewsDTO
 import fr.uge.review.dto.user.UserDTO
 import fr.uge.review.dto.user.UserDataDTO
+import fr.uge.review.dto.user.UserFollowStateDTO
 import fr.uge.review.dto.user.UserLoginDTO
+import fr.uge.review.dto.user.UserProfileDTO
 import fr.uge.review.dto.user.UserSignUpDTO
 import retrofit2.Call
 import retrofit2.http.Body
@@ -44,4 +46,15 @@ interface UserService {
     @GET("/api/v1/users/{userId}/likes")
     fun fetchUserLikes(@Path("userId") userId: Long, @Query("pageNumber") page: Int, @Query("pageSize") pageSize: Int): Call<List<LikeDTO>>
 
+    @GET("/api/v1/users/{userId}")
+    fun userProfile(@Path("userId") userId: Long): Call<UserProfileDTO>
+
+    @POST("/api/v1/users/{userId}/follow")
+    fun followUser(@Path("userId") userId: Long): Call<Void>
+
+    @POST("/api/v1/users/{userId}/unfollow")
+    fun unfollowUser(@Path("userId") userId: Long): Call<Void>
+
+    @GET("/api/v1/users/{userId}/follow/state")
+    fun fetchFollowState(@Path("userId") userId: Long): Call<UserFollowStateDTO>
 }

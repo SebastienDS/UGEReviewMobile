@@ -85,7 +85,11 @@ fun Friends(
             },
             next = {
                 page++
-            })
+            },
+            onUnfollow = {friends = friends?.filter { user -> user != it}},
+            userId,
+            sessionManager,
+            apiClient)
         Footer(navController, sessionManager = sessionManager, modifier = Modifier
             .height(50.dp)
             .fillMaxWidth())
@@ -93,7 +97,8 @@ fun Friends(
 }
 
 @Composable
-fun FriendsViewer(navController: NavHostController, friends: List<UserDTO>?, modifier: Modifier, previous: () -> Unit, next: () -> Unit ) {
+fun FriendsViewer(navController: NavHostController, friends: List<UserDTO>?, modifier: Modifier, previous: () -> Unit, next: () -> Unit,
+                  onUnfollow: (UserDTO) -> Unit, userId: Long, sessionManager: SessionManager, apiClient: ApiClient) {
     if(friends == null) {
         Box(modifier = modifier, contentAlignment = Alignment.Center) {
             Icon(Icons.Default.Refresh, Modifier.size(100.dp)) {
@@ -107,7 +112,11 @@ fun FriendsViewer(navController: NavHostController, friends: List<UserDTO>?, mod
                     it,
                     Modifier
                         .fillMaxWidth()
-                        .height(50.dp))
+                        .height(50.dp),
+                    onUnfollow,
+                    userId,
+                    sessionManager,
+                    apiClient)
                 Divider(
                     color = Color.Black,
                     modifier = Modifier
@@ -134,14 +143,15 @@ fun FriendsViewer(navController: NavHostController, friends: List<UserDTO>?, mod
 }
 
 @Composable
-fun FriendRow(navController: NavHostController, friend: UserDTO, modifier: Modifier) {
+fun FriendRow(navController: NavHostController, friend: UserDTO, modifier: Modifier,
+              onUnfollow: (UserDTO) -> Unit, userId: Long, sessionManager: SessionManager, apiClient: ApiClient) {
     Row(modifier) {
         FriendItem(navController, friend, Modifier.weight(1f))
         Box(Modifier.width(100.dp), contentAlignment = Alignment.Center) {
             Icon(Icons.Default.Delete, Modifier
                 .fillMaxHeight()
                 .padding(4.dp)) {
-                Log.i("test", "Delete $friend")
+                unfollowUser(userId, apiClient, sessionManager, {onUnfollow(friend)}, {})
             }
         }
     }
