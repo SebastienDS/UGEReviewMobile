@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,8 +40,11 @@ import androidx.navigation.NavHostController
 import fr.uge.review.dto.comment.CommentDTO
 import fr.uge.review.dto.response.ResponseDTO
 import fr.uge.review.dto.review.ReviewOneReviewDTO
+import fr.uge.review.dto.user.Role
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 
@@ -66,6 +69,23 @@ fun fetchReview(reviewId: Long, apiClient: ApiClient, onSuccess: (ReviewOneRevie
         })
 }
 
+fun deleteReview(reviewId: Long, apiClient: ApiClient, onSuccess: () -> Unit) {
+    apiClient.reviewService.deleteReview(reviewId)
+        .enqueue(object : Callback<Void> {
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e("UwU",  "OwO review", t)
+            }
+
+            override fun onResponse(call: Call<Void>, response: retrofit2.Response<Void>) {
+                if (response.isSuccessful) {
+                    onSuccess()
+                } else {
+                    Log.e("UwU", "OwO Review FAIL")
+                }
+            }
+        })
+}
+
 @Composable
 fun Review(
     navController: NavHostController,
@@ -80,6 +100,16 @@ fun Review(
     }
 
     Column {
+        val role = sessionManager.getUserRole()
+        if(role == Role.ADMIN) {
+            Button(onClick = {
+                deleteReview(reviewId, apiClient) {
+                    navController.navigate("Home")
+                }
+            }) {
+                Text(text = "Supprimer")
+            }
+        }
         val modifier = Modifier
             .weight(1f)
             .background(Color.White)
@@ -216,7 +246,9 @@ fun CommentItem(
                     Text(text = comment.date.withFormat("dd/MM/yyyy"))
                 }
 
-                Box(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)) {
                     Text(text = comment.content)
                 }
             }
@@ -265,7 +297,9 @@ fun ResponseItem(response: ResponseDTO, navController: NavHostController) {
                 Text(text = response.date.withFormat("dd/MM/yyyy"))
             }
 
-            Box(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)) {
                 Text(text = response.content)
             }
         }

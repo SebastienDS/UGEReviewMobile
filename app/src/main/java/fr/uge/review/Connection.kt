@@ -88,7 +88,7 @@ fun Connection(
                 .clickable {
                     trylogin(apiClient, UserLoginDTO(username, password), sessionManager,
                         onSuccess = {
-                            navController.navigate("Profile/${sessionManager.getUserId()}")
+                            navController.navigate("Users/${sessionManager.getUserId()}")
                         }, onFailure = {
                             username = ""
                             password = ""
