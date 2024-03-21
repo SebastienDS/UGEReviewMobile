@@ -33,8 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import fr.uge.review.dto.response.ResponseUserDTO
 import fr.uge.review.dto.user.UserDTO
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
@@ -151,7 +149,7 @@ fun FriendRow(navController: NavHostController, friend: UserDTO, modifier: Modif
             Icon(Icons.Default.Delete, Modifier
                 .fillMaxHeight()
                 .padding(4.dp)) {
-                unfollowUser(userId, apiClient, sessionManager, {onUnfollow(friend)}, {})
+                unfollowUser(userId, apiClient, {onUnfollow(friend)}) {}
             }
         }
     }

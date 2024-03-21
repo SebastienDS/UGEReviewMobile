@@ -3,11 +3,9 @@ package fr.uge.review
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,7 +28,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import fr.uge.review.dto.review.ReviewsDTO
 import fr.uge.review.dto.user.UserFollowStateDTO
 import fr.uge.review.dto.user.UserProfileDTO
 import fr.uge.review.service.SessionManager
@@ -131,15 +128,14 @@ fun Profile(
             Log.i("", "User $userId not found")
             navController.navigate("NotFound")
         })
-        fetchFollowState(userId, apiClient, sessionManager, {isFollowing = it}, {})
+        fetchFollowState(userId, apiClient, {isFollowing = it}) {}
     }
-
     Column {
         if(sessionManager.isAuthenticated() && sessionManager.getUserId() != userId) {
             Button(
                 onClick = {
                     if (isFollowing) {
-                        unfollowUser(userId, apiClient, sessionManager, {isFollowing = !isFollowing}, {})
+                        unfollowUser(userId, apiClient, {isFollowing = !isFollowing}) {}
                     } else {
                         followUser(userId, apiClient, sessionManager, {isFollowing = !isFollowing}, {})
                     }
@@ -285,7 +281,6 @@ fun followUser(userId: Long, apiClient: ApiClient, sessionManager: SessionManage
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Log.i("UwU", "UwU followUser SUCCESS")
-                    sessionManager.clear()
                     onSuccess()
                 } else {
                     Log.e("UwU", "OwO followUser FAIL")
@@ -295,8 +290,10 @@ fun followUser(userId: Long, apiClient: ApiClient, sessionManager: SessionManage
         })
 }
 
-fun unfollowUser(userId: Long, apiClient: ApiClient, sessionManager: SessionManager,
-               onSuccess: () -> Unit, onFailure: (Throwable?) -> Unit)  {
+fun unfollowUser(
+    userId: Long, apiClient: ApiClient, onSuccess: () -> Unit,
+    onFailure: (Throwable?) -> Unit
+)  {
     apiClient.userService.unfollowUser(userId)
         .enqueue(object : Callback<Void> {
             override fun onFailure(call: Call<Void>, t: Throwable) {
@@ -307,7 +304,6 @@ fun unfollowUser(userId: Long, apiClient: ApiClient, sessionManager: SessionMana
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Log.i("UwU", "UwU unfollowUser SUCCESS")
-                    sessionManager.clear()
                     onSuccess()
                 } else {
                     Log.e("UwU", "OwO unfollowUser FAIL")
@@ -317,7 +313,12 @@ fun unfollowUser(userId: Long, apiClient: ApiClient, sessionManager: SessionMana
         })
 }
 
-fun fetchFollowState(userId: Long, apiClient: ApiClient, sessionManager: SessionManager, onSuccess: (Boolean) -> Unit, onFailure: (Throwable?) -> Unit)  {
+fun fetchFollowState(
+    userId: Long,
+    apiClient: ApiClient,
+    onSuccess: (Boolean) -> Unit,
+    onFailure: (Throwable?) -> Unit
+)  {
     apiClient.userService.fetchFollowState(userId)
         .enqueue(object : Callback<UserFollowStateDTO> {
             override fun onFailure(call: Call<UserFollowStateDTO>, t: Throwable) {
