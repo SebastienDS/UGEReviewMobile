@@ -49,7 +49,6 @@ import fr.uge.review.dto.review.ReviewOneReviewDTO
 import fr.uge.review.dto.user.Role
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
-import org.w3c.dom.Comment
 import retrofit2.Call
 import retrofit2.Callback
 
@@ -305,7 +304,7 @@ fun ReviewHeader(sessionManager: SessionManager, apiClient: ApiClient, navContro
             Column(modifier = Modifier
                 .weight(1f)
                 .padding(5.dp), verticalArrangement = Arrangement.spacedBy(5.dp), horizontalAlignment = Alignment.End) {
-               Text(review.author.username, Modifier.clickable { navController.navigate("User/${review.author.id}") })
+               Text(review.author.username, Modifier.clickable { navController.navigate("Users/${review.author.id}") })
                Text(review.date.withFormat("dd/MM/yyyy"))
 
                val content = if (review.unitTests == null) {
@@ -384,7 +383,7 @@ fun CommentItem(
                     .weight(1f)
                     .padding(10.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(text = comment.author.username, modifier = Modifier.clickable { navController.navigate("User/${comment.author.id}") })
+                    Text(text = comment.author.username, modifier = Modifier.clickable { navController.navigate("Users/${comment.author.id}") })
                     Text(text = comment.date.withFormat("dd/MM/yyyy"))
                 }
 
@@ -497,7 +496,7 @@ fun ResponseItem(response: ResponseDTO,
             ) {
                 Text(
                     text = response.author.username,
-                    modifier = Modifier.clickable { navController.navigate("User/${response.author.id}") })
+                    modifier = Modifier.clickable { navController.navigate("Users/${response.author.id}") })
                 Text(text = response.date.withFormat("dd/MM/yyyy"))
             }
 
