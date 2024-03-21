@@ -1,6 +1,7 @@
 package fr.uge.review.service
 
 import androidx.compose.foundation.pager.PageSize
+import fr.uge.review.dto.like.LikeStateDTO
 import fr.uge.review.dto.review.CreateReviewDTO
 import fr.uge.review.dto.review.ReviewCreatedDTO
 import fr.uge.review.dto.review.ReviewOneReviewDTO
@@ -30,6 +31,12 @@ interface ReviewService {
 
     @POST("/api/v1/deleteReview")
     fun deleteReview(@Body id: Long): Call<Void>
+
+    @POST("/api/v1/reviews/{reviewId}/like")
+    fun likeReviews(@Path("reviewId") commentId: Long): Call<LikeStateDTO>
+
+    @POST("/api/v1/reviews/{reviewId}/dislike")
+    fun disLikeReviews(@Path("reviewId") commentId: Long): Call<LikeStateDTO>
 }
 
 fun ReviewService.createReview(review: CreateReviewDTO): Call<ReviewCreatedDTO> {
