@@ -15,11 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbUp
@@ -30,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,12 +44,12 @@ import fr.uge.review.dto.comment.CommentDTO
 import fr.uge.review.dto.like.LikeState
 import fr.uge.review.dto.like.LikeStateDTO
 import fr.uge.review.dto.response.ResponseDTO
+import fr.uge.review.dto.response.SendResponseDTO
 import fr.uge.review.dto.review.ReviewOneReviewDTO
 import fr.uge.review.dto.user.Role
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import org.w3c.dom.Comment
 import retrofit2.Call
 import retrofit2.Callback
 
@@ -89,6 +87,52 @@ fun deleteReview(reviewId: Long, apiClient: ApiClient, onSuccess: () -> Unit) {
                     Log.i("Success", "Delete Review")
                 } else {
                     Log.e("UwU", "OwO Review FAIL")
+                }
+            }
+        })
+}
+
+fun createComment(reviewId: Long, content: String, apiClient: ApiClient, onSuccess: (CommentDTO) -> Unit) {
+    Log.i("OwO", content.length.toString())
+    if(content == ""){
+        return
+    }
+    apiClient.commentService.createComment(reviewId,  content)
+        .enqueue(object : Callback<CommentDTO> {
+            override fun onFailure(call: Call<CommentDTO>, t: Throwable) {
+                Log.e("Failed",  "Comment Failed", t)
+            }
+
+            override fun onResponse(call: Call<CommentDTO>, response: retrofit2.Response<CommentDTO>) {
+                if (response.isSuccessful) {
+                    val comment = response.body()!!
+                    onSuccess(comment)
+                    Log.i("Success", "Comment created")
+                } else {
+                    Log.e("Failed", "Comment Failed")
+                }
+            }
+        })
+}
+
+fun createResponse(reviewId: Long, commentId: Long, content: String, apiClient: ApiClient, onSuccess: (ResponseDTO) -> Unit) {
+    if(content == ""){
+        return
+    }
+    Log.i("Information", "$reviewId $commentId $content")
+    apiClient.responseService.createResponse(reviewId, SendResponseDTO(commentId,  content))
+        .enqueue(object : Callback<ResponseDTO> {
+            override fun onFailure(call: Call<ResponseDTO>, t: Throwable) {
+                Log.e("Failed",  "Response Failed", t)
+            }
+
+            override fun onResponse(call: Call<ResponseDTO>, response: retrofit2.Response<ResponseDTO>) {
+                if (response.isSuccessful) {
+                    val responseDTO = response.body()!!
+                    onSuccess(responseDTO)
+                    Log.i("Success", "Response created")
+                } else {
+                    Log.e("Failed", "Response Failed")
                 }
             }
         })
@@ -171,6 +215,7 @@ fun Review(
 @Composable
 fun ReviewViewer(apiClient: ApiClient, sessionManager: SessionManager,
                  navController: NavHostController, review: ReviewOneReviewDTO, modifier: Modifier) {
+    val (comments, setComments) = remember { mutableStateOf(review.comments) }
     LazyColumn(modifier) {
         item {
             ReviewHeader(sessionManager, apiClient, navController, review)
@@ -186,9 +231,8 @@ fun ReviewViewer(apiClient: ApiClient, sessionManager: SessionManager,
                     .height(1.dp)
             )
         }
-
-        items(review.comments) {
-            CommentItem(it, apiClient, sessionManager, navController)
+        items(comments) {
+            CommentItem(review.id, it, apiClient, sessionManager, navController)
             Divider(
                 color = Color.Black,
                 modifier = Modifier
@@ -196,6 +240,35 @@ fun ReviewViewer(apiClient: ApiClient, sessionManager: SessionManager,
                     .height(1.dp)
             )
         }
+        item{
+            AddComment(review.id, apiClient){setComments(comments + it)}
+        }
+    }
+}
+
+@Composable
+fun AddComment(
+    reviewId: Long,
+    apiClient: ApiClient,
+    addComment: (CommentDTO) -> Unit
+) {
+    var content by remember{ mutableStateOf("") }
+    BasicTextField(
+        value = content,
+        onValueChange = { content = it },
+        minLines = 5,
+        maxLines = 5,
+        textStyle = TextStyle.Default.copy(fontSize = 15.sp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(1.dp, Color.Black)
+            .padding(16.dp, 8.dp)
+            .background(Color.Transparent))
+    Button(onClick = {createComment(reviewId, content, apiClient) {
+        content = ""
+        addComment.invoke(it)
+    } }) {
+        Text("Commenter")
     }
 }
 
@@ -209,7 +282,9 @@ fun ReviewHeader(sessionManager: SessionManager, apiClient: ApiClient, navContro
             Text(review.title, fontSize = 30.sp)
         }
         Row(Modifier.fillMaxWidth(),  horizontalArrangement = Arrangement.SpaceAround) {
-            Column(modifier = Modifier.weight(1f).padding(5.dp)) {
+            Column(modifier = Modifier
+                .weight(1f)
+                .padding(5.dp)) {
                 var like by remember { mutableIntStateOf(review.likes) }
                 var likeStateRemember by remember { mutableStateOf(review.likeState) }
                 IconLike(likeStateRemember, LikeState.LIKE,1f){
@@ -227,7 +302,9 @@ fun ReviewHeader(sessionManager: SessionManager, apiClient: ApiClient, navContro
                 }
             }
 
-            Column(modifier = Modifier.weight(1f).padding(5.dp), verticalArrangement = Arrangement.spacedBy(5.dp), horizontalAlignment = Alignment.End) {
+            Column(modifier = Modifier
+                .weight(1f)
+                .padding(5.dp), verticalArrangement = Arrangement.spacedBy(5.dp), horizontalAlignment = Alignment.End) {
                Text(review.author.username, Modifier.clickable { navController.navigate("User/${review.author.id}") })
                Text(review.date.withFormat("dd/MM/yyyy"))
 
@@ -277,6 +354,7 @@ fun ReviewContent(review: ReviewOneReviewDTO, modifier: Modifier) {
 
 @Composable
 fun CommentItem(
+    reviewId: Long,
     comment: CommentDTO,
     apiClient: ApiClient,
     sessionManager: SessionManager,
@@ -317,8 +395,9 @@ fun CommentItem(
                 }
             }
         }
+        val (responses, setResponses) = remember { mutableStateOf(comment.responses) }
 
-        comment.responses.forEach {
+        responses.forEach {
             Divider(
                 color = Color.Black,
                 modifier = Modifier
@@ -330,6 +409,45 @@ fun CommentItem(
                 ResponseItem(it, apiClient, sessionManager, navController)
             }
         }
+
+        var isResponding by remember { mutableStateOf(false) }
+        if(isResponding){
+            AddResponse(reviewId, comment.id, apiClient){
+                isResponding = false
+                setResponses(responses + it)
+            }
+        }else{
+            Button(onClick = {isResponding = true}) {
+                Text("Répondre")
+            }
+        }
+    }
+}
+
+@Composable
+fun AddResponse(
+    reviewId: Long,
+    commentId: Long,
+    apiClient: ApiClient,
+    onSuccess: (ResponseDTO) -> Unit
+) {
+    var content by remember{ mutableStateOf("") }
+    BasicTextField(
+        value = content,
+        onValueChange = { content = it },
+        minLines = 5,
+        maxLines = 5,
+        textStyle = TextStyle.Default.copy(fontSize = 15.sp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(1.dp, Color.Black)
+            .padding(16.dp, 8.dp)
+            .background(Color.Transparent))
+    Button(onClick = {createResponse(reviewId, commentId, content, apiClient) {
+        content = ""
+        onSuccess.invoke(it)
+    } }) {
+        Text("Commenter")
     }
 }
 

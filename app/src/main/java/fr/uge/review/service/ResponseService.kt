@@ -2,6 +2,8 @@ package fr.uge.review.service
 
 import androidx.compose.foundation.pager.PageSize
 import fr.uge.review.dto.like.LikeStateDTO
+import fr.uge.review.dto.response.ResponseDTO
+import fr.uge.review.dto.response.SendResponseDTO
 import fr.uge.review.dto.review.CreateReviewDTO
 import fr.uge.review.dto.review.ReviewCreatedDTO
 import fr.uge.review.dto.review.ReviewOneReviewDTO
@@ -10,6 +12,7 @@ import fr.uge.review.dto.user.UserDataDTO
 import fr.uge.review.dto.user.UserLoginDTO
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.Response
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -24,4 +27,6 @@ interface ResponseService {
 
     @POST("/api/v1/responses/{responseId}/dislike")
     fun dislikeResponses(@Path("responseId") commentId: Long): Call<LikeStateDTO>
+    @POST("/api/v1/reviews/{reviewId}/response")
+    fun createResponse(@Path("reviewId") reviewId: Long, @Body content: SendResponseDTO): Call<ResponseDTO>
 }
