@@ -1,6 +1,8 @@
 package fr.uge.review
 
 import android.content.Context
+import fr.uge.review.service.CommentService
+import fr.uge.review.service.ResponseService
 import fr.uge.review.service.ReviewService
 import fr.uge.review.service.SessionManager
 import fr.uge.review.service.UserService
@@ -35,6 +37,14 @@ class ApiClient(context: Context) {
 
     val userService: UserService by lazy {
         retrofit.create(UserService::class.java)
+    }
+
+    val commentService: CommentService by lazy {
+        retrofit.create(CommentService::class.java)
+    }
+
+    val responseService: ResponseService by lazy {
+        retrofit.create(ResponseService::class.java)
     }
 }
 
