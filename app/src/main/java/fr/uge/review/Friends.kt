@@ -85,7 +85,6 @@ fun Friends(
                 page++
             },
             onUnfollow = {friends = friends?.filter { user -> user != it}},
-            userId,
             sessionManager,
             apiClient)
         Footer(navController, sessionManager = sessionManager, modifier = Modifier
@@ -96,7 +95,7 @@ fun Friends(
 
 @Composable
 fun FriendsViewer(navController: NavHostController, friends: List<UserDTO>?, modifier: Modifier, previous: () -> Unit, next: () -> Unit,
-                  onUnfollow: (UserDTO) -> Unit, userId: Long, sessionManager: SessionManager, apiClient: ApiClient) {
+                  onUnfollow: (UserDTO) -> Unit, sessionManager: SessionManager, apiClient: ApiClient) {
     if(friends == null) {
         Box(modifier = modifier, contentAlignment = Alignment.Center) {
             Icon(Icons.Default.Refresh, Modifier.size(100.dp)) {
@@ -112,7 +111,6 @@ fun FriendsViewer(navController: NavHostController, friends: List<UserDTO>?, mod
                         .fillMaxWidth()
                         .height(50.dp),
                     onUnfollow,
-                    userId,
                     sessionManager,
                     apiClient)
                 Divider(
@@ -142,14 +140,14 @@ fun FriendsViewer(navController: NavHostController, friends: List<UserDTO>?, mod
 
 @Composable
 fun FriendRow(navController: NavHostController, friend: UserDTO, modifier: Modifier,
-              onUnfollow: (UserDTO) -> Unit, userId: Long, sessionManager: SessionManager, apiClient: ApiClient) {
+              onUnfollow: (UserDTO) -> Unit, sessionManager: SessionManager, apiClient: ApiClient) {
     Row(modifier) {
         FriendItem(navController, friend, Modifier.weight(1f))
         Box(Modifier.width(100.dp), contentAlignment = Alignment.Center) {
             Icon(Icons.Default.Delete, Modifier
                 .fillMaxHeight()
                 .padding(4.dp)) {
-                unfollowUser(userId, apiClient, {onUnfollow(friend)}) {}
+                unfollowUser(friend.id, apiClient, {onUnfollow(friend)}) {}
             }
         }
     }
