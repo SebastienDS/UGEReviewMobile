@@ -36,28 +36,7 @@ import androidx.navigation.NavHostController
 import fr.uge.review.dto.user.UserDTO
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
-import retrofit2.Call
-import retrofit2.Callback
-fun fetchUserFriends(userId: Long, page: Int, apiClient: ApiClient, onSuccess: (List<UserDTO>) -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.userService.fetchUserFriends(userId, page, 20)
-        .enqueue(object : Callback<List<UserDTO>> {
-            override fun onFailure(call: Call<List<UserDTO>>, t: Throwable) {
-                Log.e("UwU",  "OwO review", t)
-                onFailure(t)
-            }
 
-            override fun onResponse(call: Call<List<UserDTO>>, response: retrofit2.Response<List<UserDTO>>) {
-                if (response.isSuccessful) {
-                    val responseDTO = response.body()!!
-                    Log.i("UwU", responseDTO.toString())
-                    onSuccess(responseDTO)
-                } else {
-                    Log.e("UwU", "OwO Review FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
 
 @Composable
 fun Friends(
@@ -70,7 +49,9 @@ fun Friends(
     var page by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(page, userId) {
-        fetchUserFriends(userId, page, apiClient, { friends = it }, {})
+        handleCall(apiClient.userService.fetchUserFriends(userId, page, 20)) {
+            friends = it
+        }
     }
 
     Column {
@@ -147,7 +128,9 @@ fun FriendRow(navController: NavHostController, friend: UserDTO, modifier: Modif
             Icon(Icons.Default.Delete, Modifier
                 .fillMaxHeight()
                 .padding(4.dp)) {
-                unfollowUser(friend.id, apiClient, {onUnfollow(friend)}) {}
+                handleCall(apiClient.userService.unfollowUser(friend.id)) {
+                    onUnfollow(friend)
+                }
             }
         }
     }

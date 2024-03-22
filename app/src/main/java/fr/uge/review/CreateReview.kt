@@ -119,17 +119,15 @@ fun CreateReview(navController: NavHostController, apiClient: ApiClient, session
                     .border(1.dp, Color.Black)
                     .padding(16.dp, 8.dp)
                     .clickable {
-                        createReview(
-                            apiClient = apiClient,
-                            review = CreateReviewDTO(title, commentary, code, test),
-                            onSuccess = { navController.navigate("Review/${it.id}") },
-                            onFailure = {
-                                title = ""
-                                commentary = ""
-                                code = ""
-                                test = ""
-                            }
-                        )
+                        val review = CreateReviewDTO(title, commentary, code, test)
+                        handleCall(apiClient.reviewService.createReview(review), onFailure = {
+                            title = ""
+                            commentary = ""
+                            code = ""
+                            test = ""
+                        }) {
+                            navController.navigate("Review/${it.id}")
+                        }
                     })
             }
         }
@@ -139,26 +137,4 @@ fun CreateReview(navController: NavHostController, apiClient: ApiClient, session
                 .fillMaxWidth()
         )
     }
-}
-
-fun createReview(apiClient: ApiClient, review: CreateReviewDTO, onSuccess: (ReviewCreatedDTO) -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.reviewService.createReview(review)
-        .enqueue(object : Callback<ReviewCreatedDTO> {
-            override fun onFailure(call: Call<ReviewCreatedDTO>, t: Throwable) {
-                Log.e("UwU",  "OwO test createReview", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<ReviewCreatedDTO>, response: Response<ReviewCreatedDTO>) {
-                if (response.isSuccessful) {
-                    Log.i("UwU", "UwU test createReview SUCCESS")
-                    val body = response.body()!!
-                    Log.i("UwU", body.toString())
-                    onSuccess(body)
-                } else {
-                    Log.e("UwU", "OwO test createReview FAIL")
-                    onFailure(null)
-                }
-            }
-        })
 }

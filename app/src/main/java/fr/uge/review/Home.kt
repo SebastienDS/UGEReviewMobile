@@ -32,29 +32,6 @@ import androidx.navigation.NavHostController
 import fr.uge.review.dto.review.ReviewsDTO
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
-import retrofit2.Call
-import retrofit2.Callback
-
-fun fetchReviews(page: Int, apiClient: ApiClient, onSuccess: (List<ReviewsDTO>) -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.reviewService.fetchReviews(page, 20)
-        .enqueue(object : Callback<List<ReviewsDTO>> {
-            override fun onFailure(call: Call<List<ReviewsDTO>>, t: Throwable) {
-                Log.e("UwU",  "OwO review", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<List<ReviewsDTO>>, response: retrofit2.Response<List<ReviewsDTO>>) {
-                if (response.isSuccessful) {
-                    val reviews = response.body()!!
-                    Log.i("UwU", reviews.toString())
-                    onSuccess(reviews)
-                } else {
-                    Log.e("UwU", "OwO Review FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
 
 @Composable
 fun Home(navController: NavHostController, sessionManager: SessionManager, apiClient: ApiClient) {
@@ -62,7 +39,9 @@ fun Home(navController: NavHostController, sessionManager: SessionManager, apiCl
     var page by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(page) {
-        fetchReviews(page, apiClient, { reviews = it }, {})
+        handleCall(apiClient.reviewService.fetchReviews(page, 20)) {
+            reviews = it
+        }
     }
 
     Column {

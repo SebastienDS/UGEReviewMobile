@@ -18,15 +18,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material.icons.outlined.ThumbUp
-import androidx.compose.material3.Button
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.ThumbUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,7 +45,6 @@ import androidx.navigation.NavHostController
 import fr.uge.review.dto.comment.CommentDTO
 import fr.uge.review.dto.like.LikeState
 import fr.uge.review.dto.like.LikeStateDTO
-import fr.uge.review.dto.notification.NotificationStateDTO
 import fr.uge.review.dto.response.ResponseDTO
 import fr.uge.review.dto.response.SendResponseDTO
 import fr.uge.review.dto.review.ReviewOneReviewDTO
@@ -56,171 +52,14 @@ import fr.uge.review.dto.user.Role
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
 import retrofit2.Call
-import retrofit2.Callback
-
-fun fetchReview(reviewId: Long, apiClient: ApiClient, onSuccess: (ReviewOneReviewDTO) -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.reviewService.fetchReview(reviewId)
-        .enqueue(object : Callback<ReviewOneReviewDTO> {
-            override fun onFailure(call: Call<ReviewOneReviewDTO>, t: Throwable) {
-                Log.e("Failed",  "Review fetch FAIL", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<ReviewOneReviewDTO>, response: retrofit2.Response<ReviewOneReviewDTO>) {
-                if (response.isSuccessful) {
-                    val review = response.body()!!
-                    Log.i("Success", "Review fetch")
-                    onSuccess(review)
-                } else {
-                    Log.e("Failed", "Review fetch FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
-
-fun fetchNotificationState(reviewId: Long, apiClient: ApiClient, onSuccess: (Boolean) -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.notificationService.fetchNotificationState(reviewId)
-        .enqueue(object : Callback<NotificationStateDTO> {
-            override fun onFailure(call: Call<NotificationStateDTO>, t: Throwable) {
-                Log.e("UwU",  "OwO notification state", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<NotificationStateDTO>, response: retrofit2.Response<NotificationStateDTO>) {
-                if (response.isSuccessful) {
-                    val state = response.body()!!
-                    Log.i("UwU", state.toString())
-                    onSuccess(state.isUserRequestingNotification)
-                } else {
-                    Log.e("UwU", "OwO notification state FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
-
-fun activateNotification(reviewId: Long, apiClient: ApiClient, onSuccess: () -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.notificationService.activateNotification(reviewId)
-        .enqueue(object : Callback<Void> {
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e("UwU",  "OwO notification activate", t)
-                onFailure(t)
-            }
-            override fun onResponse(call: Call<Void>, response: retrofit2.Response<Void>) {
-                if (response.isSuccessful) {
-                    onSuccess()
-                } else {
-                    Log.e("UwU", "OwO notification activate FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
-
-fun deactivateNotification(reviewId: Long, apiClient: ApiClient, onSuccess: () -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.notificationService.deactivateNotification(reviewId)
-        .enqueue(object : Callback<Void> {
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e("UwU",  "OwO notification deactivate", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<Void>, response: retrofit2.Response<Void>) {
-                if (response.isSuccessful) {
-                    onSuccess()
-                } else {
-                    Log.e("UwU", "OwO notification deactivate FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
-
-fun deleteReview(reviewId: Long, apiClient: ApiClient, onSuccess: () -> Unit) {
-    apiClient.reviewService.deleteReview(reviewId)
-        .enqueue(object : Callback<Void> {
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e("UwU",  "OwO review", t)
-            }
-
-            override fun onResponse(call: Call<Void>, response: retrofit2.Response<Void>) {
-                if (response.isSuccessful) {
-                    onSuccess()
-                    Log.i("Success", "Delete Review")
-                } else {
-                    Log.e("UwU", "OwO Review FAIL")
-                }
-            }
-        })
-}
-
-fun createComment(reviewId: Long, content: String, apiClient: ApiClient, onSuccess: (CommentDTO) -> Unit) {
-    Log.i("OwO", content.length.toString())
-    if(content == ""){
-        return
-    }
-    apiClient.commentService.createComment(reviewId,  content)
-        .enqueue(object : Callback<CommentDTO> {
-            override fun onFailure(call: Call<CommentDTO>, t: Throwable) {
-                Log.e("Failed",  "Comment Failed", t)
-            }
-
-            override fun onResponse(call: Call<CommentDTO>, response: retrofit2.Response<CommentDTO>) {
-                if (response.isSuccessful) {
-                    val comment = response.body()!!
-                    onSuccess(comment)
-                    Log.i("Success", "Comment created")
-                } else {
-                    Log.e("Failed", "Comment Failed")
-                }
-            }
-        })
-}
-
-fun createResponse(reviewId: Long, commentId: Long, content: String, apiClient: ApiClient, onSuccess: (ResponseDTO) -> Unit) {
-    if(content == ""){
-        return
-    }
-    Log.i("Information", "$reviewId $commentId $content")
-    apiClient.responseService.createResponse(reviewId, SendResponseDTO(commentId,  content))
-        .enqueue(object : Callback<ResponseDTO> {
-            override fun onFailure(call: Call<ResponseDTO>, t: Throwable) {
-                Log.e("Failed",  "Response Failed", t)
-            }
-
-            override fun onResponse(call: Call<ResponseDTO>, response: retrofit2.Response<ResponseDTO>) {
-                if (response.isSuccessful) {
-                    val responseDTO = response.body()!!
-                    onSuccess(responseDTO)
-                    Log.i("Success", "Response created")
-                } else {
-                    Log.e("Failed", "Response Failed")
-                }
-            }
-        })
-}
 
 
 fun like(sessionManager: SessionManager,
                 navController: NavHostController,  call : Call<LikeStateDTO>, onSuccess: (LikeStateDTO) -> Unit) {
     checkConnection(sessionManager.isAuthenticated(), navController)
-    call
-        .enqueue(object : Callback<LikeStateDTO> {
-            override fun onFailure(call: Call<LikeStateDTO>, t: Throwable) {
-                Log.e("Failed",  "Comment Not Liked", t)
-            }
-
-            override fun onResponse(call: Call<LikeStateDTO>, response: retrofit2.Response<LikeStateDTO>) {
-                if (response.isSuccessful) {
-                    val likeStateDTO = response.body()!!
-                    onSuccess(likeStateDTO)
-                    Log.i("Success", "Comment Liked")
-                } else {
-                    Log.e("Failed", "Comment Not Liked")
-                }
-            }
-        })
+    handleCall(call) {
+        onSuccess(it)
+    }
 }
 
 fun checkConnection(authenticated: Boolean, navController: NavHostController) {
@@ -240,17 +79,21 @@ fun Review(
     var isRequestingNotification: Boolean by remember { mutableStateOf(false) }
 
     LaunchedEffect(reviewId) {
-        fetchReview(reviewId, apiClient, { review = it }, {})
+        handleCall(apiClient.reviewService.fetchReview(reviewId)) {
+            review = it
+        }
     }
     LaunchedEffect(Unit) {
-        fetchNotificationState(reviewId, apiClient, { isRequestingNotification = it }, {})
+        handleCall(apiClient.notificationService.fetchNotificationState(reviewId)) {
+            isRequestingNotification = it.isUserRequestingNotification
+        }
     }
 
     Column {
         val role = sessionManager.getUserRole()
         if(role == Role.ADMIN) {
             Button(onClick = {
-                deleteReview(reviewId, apiClient) {
+                handleCall(apiClient.reviewService.deleteReview(reviewId)) {
                     navController.navigate("Home")
                 }
             }) {
@@ -271,9 +114,13 @@ fun Review(
         } else  {
             ReviewViewer(navController, review!!, isRequestingNotification, sessionManager, apiClient, modifier = modifier) {
                 if (isRequestingNotification) {
-                    deactivateNotification(reviewId, apiClient, { isRequestingNotification = false }, {})
+                    handleCall(apiClient.notificationService.deactivateNotification(reviewId)) {
+                        isRequestingNotification = false
+                    }
                 } else {
-                    activateNotification(reviewId, apiClient, { isRequestingNotification = true }, {})
+                    handleCall(apiClient.notificationService.activateNotification(reviewId)) {
+                        isRequestingNotification = true
+                    }
                 }
             }
         }
@@ -344,10 +191,14 @@ fun AddComment(
             .border(1.dp, Color.Black)
             .padding(16.dp, 8.dp)
             .background(Color.Transparent))
-    Button(onClick = {createComment(reviewId, content, apiClient) {
-        content = ""
-        addComment.invoke(it)
-    } }) {
+    Button(onClick = {
+        if (content != "") {
+            handleCall(apiClient.commentService.createComment(reviewId, content)) {
+                content = ""
+                addComment(it)
+            }
+        }
+    }) {
         Text("Commenter")
     }
 }
@@ -537,10 +388,12 @@ fun AddResponse(
             .border(1.dp, Color.Black)
             .padding(16.dp, 8.dp)
             .background(Color.Transparent))
-    Button(onClick = {createResponse(reviewId, commentId, content, apiClient) {
-        content = ""
-        onSuccess.invoke(it)
-    } }) {
+    Button(onClick = {
+        handleCall(apiClient.responseService.createResponse(reviewId, SendResponseDTO(commentId, content))) {
+            content = ""
+            onSuccess(it)
+        }
+    }) {
         Text("Commenter")
     }
 }

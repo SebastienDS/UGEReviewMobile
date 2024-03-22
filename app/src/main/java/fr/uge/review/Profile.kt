@@ -124,20 +124,28 @@ fun Profile(
 
 
     LaunchedEffect(Unit) {
-        userProfile(userId, apiClient, { userProfile = it }, {
-            Log.i("", "User $userId not found")
+        handleCall(apiClient.userService.userProfile(userId), onFailure = {
+            Log.i("UwU", "User $userId not found")
             navController.navigate("NotFound")
-        })
-        fetchFollowState(userId, apiClient, {isFollowing = it}) {}
+        }) {
+            userProfile = it
+        }
+        handleCall(apiClient.userService.fetchFollowState(userId)) {
+            isFollowing = it.isUserFollowing
+        }
     }
     Column {
         if(sessionManager.isAuthenticated() && sessionManager.getUserId() != userId) {
             Button(
                 onClick = {
                     if (isFollowing) {
-                        unfollowUser(userId, apiClient, {isFollowing = !isFollowing}) {}
+                        handleCall(apiClient.userService.unfollowUser(userId)) {
+                            isFollowing = !isFollowing
+                        }
                     } else {
-                        followUser(userId, apiClient, sessionManager, {isFollowing = !isFollowing}, {})
+                        handleCall(apiClient.userService.followUser(userId)) {
+                            isFollowing = !isFollowing
+                        }
                     }
                 },
                 modifier = Modifier.padding(end = 8.dp)
@@ -154,17 +162,17 @@ fun Profile(
             Column(modifier = Modifier
                 .fillMaxWidth()) {
                 Text(
-                    text = "${userProfile!!.username}",
+                    text = userProfile!!.username,
                     style = TextStyle(fontSize = 18.sp)
                 )
                 if (sessionManager.isAuthenticated() && sessionManager.getUserId() == userId) {
                     Column {
                         Text(
-                            text = "${userProfile!!.email}",
+                            text = userProfile!!.email,
                             style = TextStyle(fontSize = 18.sp)
                         )
                         Text(
-                            text = "${userProfile!!.dateCreation}",
+                            text = userProfile!!.dateCreation.withFormat("dd/MM/yyyy"),
                             style = TextStyle(fontSize = 18.sp)
                         )
                     }
@@ -178,20 +186,20 @@ fun Profile(
             horizontalAlignment = Alignment.CenterHorizontally) {
             Box(modifier = Modifier
                     .clickable {
-                        logout(apiClient = apiClient, sessionManager = sessionManager,
-                            onSuccess = {
-                                navController.navigate("Connection")
-                            }, onFailure = {})
+                        handleCall(apiClient.userService.logout()) {
+                            sessionManager.clear()
+                            navController.navigate("Connection")
+                        }
                     }){
                 Text("Se déconnecter")
             }
             if (sessionManager.isAuthenticated() && sessionManager.getUserId() == userId) {
                 Box(modifier = Modifier
                     .clickable {
-                        deleteProfile(apiClient = apiClient, sessionManager = sessionManager,
-                            onSuccess = {
-                                navController.navigate("Connection")
-                            }, onFailure = {})
+                        handleCall(apiClient.userService.deleteProfile()) {
+                            sessionManager.clear()
+                            navController.navigate("Connection")
+                        }
                     }){
                     Text("Supprimer mon compte")
                 }
@@ -203,140 +211,3 @@ fun Profile(
             .fillMaxWidth())
     }
 }
-
-fun logout(apiClient: ApiClient, sessionManager: SessionManager,
-             onSuccess: () -> Unit, onFailure: (Throwable?) -> Unit)  {
-    apiClient.userService.logout()
-        .enqueue(object : Callback<Void> {
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e("UwU",  "OwO logout", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (response.isSuccessful) {
-                    Log.i("UwU", "UwU LOGOUT SUCCESS")
-                    sessionManager.clear()
-                    onSuccess()
-                } else {
-                    Log.e("UwU", "OwO LOGOUT FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
-
-fun deleteProfile(apiClient: ApiClient, sessionManager: SessionManager,
-           onSuccess: () -> Unit, onFailure: (Throwable?) -> Unit)  {
-    apiClient.userService.deleteProfile()
-        .enqueue(object : Callback<Void> {
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e("UwU",  "OwO deleteProfile", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (response.isSuccessful) {
-                    Log.i("UwU", "UwU deleteProfile SUCCESS")
-                    sessionManager.clear()
-                    onSuccess()
-                } else {
-                    Log.e("UwU", "OwO deleteProfile FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
-
-fun userProfile(userId: Long, apiClient: ApiClient, onSuccess: (UserProfileDTO) -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.userService.userProfile(userId)
-        .enqueue(object : Callback<UserProfileDTO> {
-            override fun onFailure(call: Call<UserProfileDTO>, t: Throwable) {
-                Log.e("UwU",  "OwO userProfile", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<UserProfileDTO>, response: retrofit2.Response<UserProfileDTO>) {
-                if (response.isSuccessful) {
-                    val users = response.body()!!
-                    Log.i("UwU", users.toString())
-                    onSuccess(users)
-                } else {
-                    Log.e("UwU", "OwO userProfile FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
-
-fun followUser(userId: Long, apiClient: ApiClient, sessionManager: SessionManager,
-                  onSuccess: () -> Unit, onFailure: (Throwable?) -> Unit)  {
-    apiClient.userService.followUser(userId)
-        .enqueue(object : Callback<Void> {
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e("UwU",  "OwO followUser", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (response.isSuccessful) {
-                    Log.i("UwU", "UwU followUser SUCCESS")
-                    onSuccess()
-                } else {
-                    Log.e("UwU", "OwO followUser FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
-
-fun unfollowUser(
-    userId: Long, apiClient: ApiClient, onSuccess: () -> Unit,
-    onFailure: (Throwable?) -> Unit
-)  {
-    apiClient.userService.unfollowUser(userId)
-        .enqueue(object : Callback<Void> {
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e("UwU",  "OwO unfollowUser", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (response.isSuccessful) {
-                    Log.i("UwU", "UwU unfollowUser SUCCESS")
-                    onSuccess()
-                } else {
-                    Log.e("UwU", "OwO unfollowUser FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
-
-fun fetchFollowState(
-    userId: Long,
-    apiClient: ApiClient,
-    onSuccess: (Boolean) -> Unit,
-    onFailure: (Throwable?) -> Unit
-)  {
-    apiClient.userService.fetchFollowState(userId)
-        .enqueue(object : Callback<UserFollowStateDTO> {
-            override fun onFailure(call: Call<UserFollowStateDTO>, t: Throwable) {
-                Log.e("UwU",  "OwO fetchFollowState", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<UserFollowStateDTO>, response: Response<UserFollowStateDTO>) {
-                if (response.isSuccessful) {
-                    val isFollowing = response.body()!!.isUserFollowing
-                    Log.i("UwU", "UwU fetchFollowState SUCCESS $isFollowing")
-                    onSuccess(isFollowing)
-
-                } else {
-                    Log.e("UwU", "OwO fetchFollowState FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
-

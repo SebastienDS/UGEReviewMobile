@@ -20,26 +20,6 @@ import fr.uge.review.service.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 
-fun fetchUserResponses(userId: Long, page: Int, apiClient: ApiClient, onSuccess: (List<ResponseUserDTO>) -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.userService.fetchUserResponses(userId, page, 20)
-        .enqueue(object : Callback<List<ResponseUserDTO>> {
-            override fun onFailure(call: Call<List<ResponseUserDTO>>, t: Throwable) {
-                Log.e("UwU",  "OwO review", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<List<ResponseUserDTO>>, response: retrofit2.Response<List<ResponseUserDTO>>) {
-                if (response.isSuccessful) {
-                    val responseDTO = response.body()!!
-                    Log.i("UwU", responseDTO.toString())
-                    onSuccess(responseDTO)
-                } else {
-                    Log.e("UwU", "OwO Review FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
 
 @Composable
 fun UserResponses(
@@ -52,7 +32,9 @@ fun UserResponses(
     var page by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(page, userId) {
-        fetchUserResponses(userId, page, apiClient, { responses = it }, {})
+        handleCall(apiClient.userService.fetchUserResponses(userId, page, 20)) {
+            responses = it
+        }
     }
 
     Column {

@@ -1,6 +1,5 @@
 package fr.uge.review
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -31,29 +30,7 @@ import androidx.navigation.NavHostController
 import fr.uge.review.dto.review.ReviewsDTO
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
-import retrofit2.Call
-import retrofit2.Callback
 
-fun searchReviews(search: String, page: Int, apiClient: ApiClient, onSuccess: (List<ReviewsDTO>) -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.reviewService.searchReviews(search, page, 20)
-        .enqueue(object : Callback<List<ReviewsDTO>> {
-            override fun onFailure(call: Call<List<ReviewsDTO>>, t: Throwable) {
-                Log.e("UwU",  "OwO review", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<List<ReviewsDTO>>, response: retrofit2.Response<List<ReviewsDTO>>) {
-                if (response.isSuccessful) {
-                    val reviews = response.body()!!
-                    Log.i("UwU", reviews.toString())
-                    onSuccess(reviews)
-                } else {
-                    Log.e("UwU", "OwO Review FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
 
 @Composable
 fun Search(navController: NavHostController, sessionManager: SessionManager, apiClient: ApiClient){
@@ -61,7 +38,9 @@ fun Search(navController: NavHostController, sessionManager: SessionManager, api
     var page by remember { mutableIntStateOf(0) }
     var search by remember { mutableStateOf("") }
     LaunchedEffect(search, page) {
-        searchReviews(search, page, apiClient, { reviews = it }, {})
+        handleCall(apiClient.reviewService.searchReviews(search, page, 20)) {
+            reviews = it
+        }
     }
     Column {
         SearchComponent(
