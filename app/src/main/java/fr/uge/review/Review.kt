@@ -22,6 +22,11 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +48,7 @@ import androidx.navigation.NavHostController
 import fr.uge.review.dto.comment.CommentDTO
 import fr.uge.review.dto.like.LikeState
 import fr.uge.review.dto.like.LikeStateDTO
+import fr.uge.review.dto.notification.NotificationStateDTO
 import fr.uge.review.dto.response.ResponseDTO
 import fr.uge.review.dto.response.SendResponseDTO
 import fr.uge.review.dto.review.ReviewOneReviewDTO
@@ -67,6 +73,64 @@ fun fetchReview(reviewId: Long, apiClient: ApiClient, onSuccess: (ReviewOneRevie
                     onSuccess(review)
                 } else {
                     Log.e("Failed", "Review fetch FAIL")
+                    onFailure(null)
+                }
+            }
+        })
+}
+
+fun fetchNotificationState(reviewId: Long, apiClient: ApiClient, onSuccess: (Boolean) -> Unit, onFailure: (Throwable?) -> Unit) {
+    apiClient.notificationService.fetchNotificationState(reviewId)
+        .enqueue(object : Callback<NotificationStateDTO> {
+            override fun onFailure(call: Call<NotificationStateDTO>, t: Throwable) {
+                Log.e("UwU",  "OwO notification state", t)
+                onFailure(t)
+            }
+
+            override fun onResponse(call: Call<NotificationStateDTO>, response: retrofit2.Response<NotificationStateDTO>) {
+                if (response.isSuccessful) {
+                    val state = response.body()!!
+                    Log.i("UwU", state.toString())
+                    onSuccess(state.isUserRequestingNotification)
+                } else {
+                    Log.e("UwU", "OwO notification state FAIL")
+                    onFailure(null)
+                }
+            }
+        })
+}
+
+fun activateNotification(reviewId: Long, apiClient: ApiClient, onSuccess: () -> Unit, onFailure: (Throwable?) -> Unit) {
+    apiClient.notificationService.activateNotification(reviewId)
+        .enqueue(object : Callback<Void> {
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e("UwU",  "OwO notification activate", t)
+                onFailure(t)
+            }
+            override fun onResponse(call: Call<Void>, response: retrofit2.Response<Void>) {
+                if (response.isSuccessful) {
+                    onSuccess()
+                } else {
+                    Log.e("UwU", "OwO notification activate FAIL")
+                    onFailure(null)
+                }
+            }
+        })
+}
+
+fun deactivateNotification(reviewId: Long, apiClient: ApiClient, onSuccess: () -> Unit, onFailure: (Throwable?) -> Unit) {
+    apiClient.notificationService.deactivateNotification(reviewId)
+        .enqueue(object : Callback<Void> {
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e("UwU",  "OwO notification deactivate", t)
+                onFailure(t)
+            }
+
+            override fun onResponse(call: Call<Void>, response: retrofit2.Response<Void>) {
+                if (response.isSuccessful) {
+                    onSuccess()
+                } else {
+                    Log.e("UwU", "OwO notification deactivate FAIL")
                     onFailure(null)
                 }
             }
@@ -165,7 +229,6 @@ fun checkConnection(authenticated: Boolean, navController: NavHostController) {
     }
 }
 
-
 @Composable
 fun Review(
     navController: NavHostController,
@@ -174,9 +237,13 @@ fun Review(
     sessionManager: SessionManager,
 ) {
     var review: ReviewOneReviewDTO? by remember { mutableStateOf(null) }
+    var isRequestingNotification: Boolean by remember { mutableStateOf(false) }
 
     LaunchedEffect(reviewId) {
         fetchReview(reviewId, apiClient, { review = it }, {})
+    }
+    LaunchedEffect(Unit) {
+        fetchNotificationState(reviewId, apiClient, { isRequestingNotification = it }, {})
     }
 
     Column {
@@ -202,7 +269,13 @@ fun Review(
                 }
             }
         } else  {
-            ReviewViewer(apiClient, sessionManager, navController, review!!, modifier = modifier)
+            ReviewViewer(navController, review!!, isRequestingNotification, sessionManager, apiClient, modifier = modifier) {
+                if (isRequestingNotification) {
+                    deactivateNotification(reviewId, apiClient, { isRequestingNotification = false }, {})
+                } else {
+                    activateNotification(reviewId, apiClient, { isRequestingNotification = true }, {})
+                }
+            }
         }
 
         Footer(navController, sessionManager = sessionManager, modifier = Modifier
@@ -212,12 +285,20 @@ fun Review(
 }
 
 @Composable
-fun ReviewViewer(apiClient: ApiClient, sessionManager: SessionManager,
-                 navController: NavHostController, review: ReviewOneReviewDTO, modifier: Modifier) {
+fun ReviewViewer(
+    navController: NavHostController,
+    review: ReviewOneReviewDTO,
+    isRequestingNotification: Boolean,
+    sessionManager: SessionManager,
+    apiClient: ApiClient,
+    modifier: Modifier,
+    onNotificationButtonClick: () -> Unit
+) {
     val (comments, setComments) = remember { mutableStateOf(review.comments) }
+
     LazyColumn(modifier) {
         item {
-            ReviewHeader(sessionManager, apiClient, navController, review)
+            ReviewHeader(navController, review, isRequestingNotification, onNotificationButtonClick, sessionManager, apiClient)
             ReviewContent(review, modifier = Modifier.padding(20.dp, 10.dp))
 
             val count = computeCommentsCount(review)
@@ -275,7 +356,14 @@ fun computeCommentsCount(review: ReviewOneReviewDTO): Int =
     review.comments.sumOf { it.responses.size + 1 }
 
 @Composable
-fun ReviewHeader(sessionManager: SessionManager, apiClient: ApiClient, navController: NavHostController, review: ReviewOneReviewDTO) {
+fun ReviewHeader(
+    navController: NavHostController,
+    review: ReviewOneReviewDTO,
+    isRequestingNotification: Boolean,
+    onNotificationButtonClick: () -> Unit,
+    sessionManager: SessionManager,
+    apiClient: ApiClient,
+) {
     Column(Modifier.fillMaxWidth()) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Text(review.title, fontSize = 30.sp)
@@ -304,19 +392,19 @@ fun ReviewHeader(sessionManager: SessionManager, apiClient: ApiClient, navContro
             Column(modifier = Modifier
                 .weight(1f)
                 .padding(5.dp), verticalArrangement = Arrangement.spacedBy(5.dp), horizontalAlignment = Alignment.End) {
-               Text(review.author.username, Modifier.clickable { navController.navigate("Users/${review.author.id}") })
-               Text(review.date.withFormat("dd/MM/yyyy"))
+                Text(review.author.username, Modifier.clickable { navController.navigate("Users/${review.author.id}") })
+                Text(review.date.withFormat("dd/MM/yyyy"))
 
-               val content = if (review.unitTests == null) {
+                val content = if (review.unitTests == null) {
                    "Testing"
-               } else if (review.unitTests.errors.isEmpty()) {
+                } else if (review.unitTests.errors.isEmpty()) {
                    val succeeded = review.unitTests.succeededCount
                    val total = review.unitTests.totalCount
                    "$succeeded / $total"
-               } else {
+                } else {
                    "Error"
-               }
-               Text(text = content, modifier = Modifier
+                }
+                Text(text = content, modifier = Modifier
                    .let {
                        if (review.unitTests == null) it.background(Color.Blue)
                        if (review.unitTests!!.errors.isNotEmpty()) it.background(Color.Red)
@@ -327,7 +415,14 @@ fun ReviewHeader(sessionManager: SessionManager, apiClient: ApiClient, navContro
                    }
                    .border(1.dp, Color.Black)
                    .padding(20.dp)
-               )
+                )
+
+                if (sessionManager.isAuthenticated()) {
+                    val icon = if (isRequestingNotification) Icons.Outlined.Notifications else Icons.Default.Notifications
+                    Icon(icon, Modifier.size(50.dp)) {
+                        onNotificationButtonClick()
+                    }
+                }
             }
         }
 

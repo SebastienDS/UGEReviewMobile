@@ -3,6 +3,7 @@ package fr.uge.review
 import android.content.Context
 import fr.uge.review.service.CommentService
 import fr.uge.review.service.ResponseService
+import fr.uge.review.service.NotificationService
 import fr.uge.review.service.ReviewService
 import fr.uge.review.service.SessionManager
 import fr.uge.review.service.UserService
@@ -14,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiClient(context: Context) {
     companion object {
-        private const val BASE_URL = "http://localhost:8080/"  // localhost on emulator
+        private const val BASE_URL = "http://localhost:8080/"  // 10.0.2.2 on emulator
     }
 
     private val retrofit by lazy {
@@ -45,6 +46,10 @@ class ApiClient(context: Context) {
 
     val responseService: ResponseService by lazy {
         retrofit.create(ResponseService::class.java)
+    }
+
+    val notificationService: NotificationService by lazy {
+        retrofit.create(NotificationService::class.java)
     }
 }
 
