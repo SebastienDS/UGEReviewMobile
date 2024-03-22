@@ -87,14 +87,14 @@ fun Signup(navController: NavHostController, apiClient: ApiClient, sessionManage
                 .border(1.dp, Color.Black)
                 .padding(20.dp, 15.dp)
                 .clickable {
-                    trySignup(apiClient, UserSignUpDTO(username, email, password),
-                        onSuccess = {
-                            navController.navigate("Connection")
-                        }, onFailure = {
-                            username = ""
-                            email = ""
-                            password = ""
-                        })
+                    val userSignup = UserSignUpDTO(username, email, password)
+                    handleCall(apiClient.userService.signup(userSignup), onFailure = {
+                        username = ""
+                        email = ""
+                        password = ""
+                    }) {
+                        navController.navigate("Connection")
+                    }
                 })
         }
         Footer(navController, sessionManager = sessionManager,
@@ -103,26 +103,4 @@ fun Signup(navController: NavHostController, apiClient: ApiClient, sessionManage
                 .fillMaxWidth()
         )
     }
-}
-
-
-fun trySignup(apiClient: ApiClient, userSignUpDTO: UserSignUpDTO,
-             onSuccess: () -> Unit, onFailure: () -> Unit)  {
-    apiClient.userService.signup(userSignUpDTO)
-        .enqueue(object : Callback<Void> {
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                // Error logging in
-                Log.e("UwU",  "OwO signup", t)
-            }
-
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (response.isSuccessful) {
-                    Log.e("UwU",  "UwU SIGNUP SUCCESS")
-                    onSuccess()
-                } else {
-                    Log.e("UwU", "OwO SIGNUP FAIL")
-                    onFailure()
-                }
-            }
-        })
 }

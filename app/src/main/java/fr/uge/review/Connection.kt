@@ -86,13 +86,14 @@ fun Connection(
                 .border(1.dp, Color.Black)
                 .padding(20.dp, 15.dp)
                 .clickable {
-                    trylogin(apiClient, UserLoginDTO(username, password), sessionManager,
-                        onSuccess = {
-                            navController.navigate("Users/${sessionManager.getUserId()}")
-                        }, onFailure = {
-                            username = ""
-                            password = ""
-                        })
+                    handleCall(apiClient.userService.login(UserLoginDTO(username, password)), onFailure = {
+                        username = ""
+                        password = ""
+                    }) {
+                        sessionManager.setToken(username, password)
+                        sessionManager.setUserData(it)
+                        navController.navigate("Users/${sessionManager.getUserId()}")
+                    }
                 })
         }
         Footer(navController, sessionManager = sessionManager,
@@ -101,31 +102,6 @@ fun Connection(
                 .fillMaxWidth()
         )
     }
-}
-
-
-fun trylogin(apiClient: ApiClient, userLoginDTO: UserLoginDTO, sessionManager: SessionManager,
-             onSuccess: () -> Unit, onFailure: () -> Unit)  {
-    apiClient.userService.login(userLoginDTO)
-        .enqueue(object : Callback<UserDataDTO> {
-            override fun onFailure(call: Call<UserDataDTO>, t: Throwable) {
-                // Error logging in
-                Log.e("UwU",  "OwO login", t)
-            }
-
-            override fun onResponse(call: Call<UserDataDTO>, response: Response<UserDataDTO>) {
-                if (response.isSuccessful) {
-                    val data = response.body()
-                    Log.i("UwU", data.toString())
-                    sessionManager.setToken(userLoginDTO.username, userLoginDTO.password)
-                    sessionManager.setUserData(data!!)
-                    onSuccess()
-                } else {
-                    Log.e("UwU", "OwO LOGIN FAIL")
-                    onFailure()
-                }
-            }
-        })
 }
 
 @Preview(showBackground = true)

@@ -21,26 +21,6 @@ import fr.uge.review.service.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 
-fun fetchUserLikes(userId: Long, page: Int, apiClient: ApiClient, onSuccess: (List<LikeDTO>) -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.userService.fetchUserLikes(userId, page, 20)
-        .enqueue(object : Callback<List<LikeDTO>> {
-            override fun onFailure(call: Call<List<LikeDTO>>, t: Throwable) {
-                Log.e("UwU",  "OwO review", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<List<LikeDTO>>, response: retrofit2.Response<List<LikeDTO>>) {
-                if (response.isSuccessful) {
-                    val likes = response.body()!!
-                    Log.i("UwU", likes.toString())
-                    onSuccess(likes)
-                } else {
-                    Log.e("UwU", "OwO Review FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
 
 @Composable
 fun UserLikes(
@@ -53,7 +33,9 @@ fun UserLikes(
     var page by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(page, userId) {
-        fetchUserLikes(userId, page, apiClient, { likes = it }, {})
+        handleCall(apiClient.userService.fetchUserLikes(userId, page, 20)) {
+            likes = it
+        }
     }
 
     Column {

@@ -1,6 +1,5 @@
 package fr.uge.review
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -30,40 +29,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import fr.uge.review.dto.notification.NotificationDTO
 import fr.uge.review.service.SessionManager
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-
-fun fetchNotifications(apiClient: ApiClient, onSuccess: (List<NotificationDTO>) -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.notificationService.fetchNotifications()
-        .enqueue(object : Callback<List<NotificationDTO>> {
-            override fun onFailure(call: Call<List<NotificationDTO>>, t: Throwable) {
-                Log.e("UwU",  "OwO notifications", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<List<NotificationDTO>>, response: Response<List<NotificationDTO>>) {
-                if (response.isSuccessful) {
-                    val notifications = response.body()!!
-                    Log.i("UwU", notifications.toString())
-                    onSuccess(notifications)
-                } else {
-                    Log.e("UwU", "OwO notifications FAIL")
-                    onFailure(null)
-                }
-            }
-        })
-}
 
 @Composable
 fun Notifications(navController: NavHostController, apiClient: ApiClient, sessionManager: SessionManager) {
     var notifications by remember { mutableStateOf<List<NotificationDTO>>(listOf()) }
 
     LaunchedEffect(Unit) {
-        fetchNotifications(apiClient, onSuccess = {
+        handleCall(apiClient.notificationService.fetchNotifications()) {
             notifications = it
-        }, {})
+        }
     }
     Column {
         NotificationsViewer(navController, apiClient, notifications, modifier = Modifier
@@ -101,10 +76,9 @@ fun Notification(navController: NavHostController, apiClient: ApiClient, notific
                 Icons.Default.Clear, Modifier
                     .fillMaxHeight()
                     .padding(4.dp)) {
-                markAsRead(apiClient = apiClient, notification = notification,
-                    onSuccess = {
-                        onMarkAsRead(notification)
-                    }, onFailure = {})
+                handleCall(apiClient.notificationService.markAsRead(notification.id)) {
+                    onMarkAsRead(notification)
+                }
             }
         }
 
@@ -113,35 +87,14 @@ fun Notification(navController: NavHostController, apiClient: ApiClient, notific
                 .weight(1f)
                 .padding(8.dp)
                 .clickable {
-                    markAsRead(apiClient = apiClient, notification = notification,
-                        onSuccess = {
-                            val regex = "/reviews/(?<id>\\d+)".toRegex()
-                            val match = regex.find(notification.link)!!
-                            val id = match.groups["id"]!!.value
-                            navController.navigate("Review/$id")
-                        }, onFailure = {})
+                    handleCall(apiClient.notificationService.markAsRead(notification.id)) {
+                        val regex = "/reviews/(?<id>\\d+)".toRegex()
+                        val match = regex.find(notification.link)!!
+                        val id = match.groups["id"]!!.value
+                        navController.navigate("Review/$id")
+                    }
                 }) {
             Text(notification.message, color = Color.Black)
         }
     }
-}
-
-fun markAsRead(apiClient: ApiClient, notification: NotificationDTO, onSuccess: () -> Unit, onFailure: (Throwable?) -> Unit) {
-    apiClient.notificationService.markAsRead(notification.id)
-        .enqueue(object : Callback<Void> {
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e("UwU",  "OwO markAsRead", t)
-                onFailure(t)
-            }
-
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (response.isSuccessful) {
-                    Log.i("UwU", "UwU markAsRead $notification")
-                    onSuccess()
-                } else {
-                    Log.e("UwU", "OwO markAsRead FAIL")
-                    onFailure(null)
-                }
-            }
-        })
 }
