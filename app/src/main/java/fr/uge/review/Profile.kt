@@ -327,8 +327,9 @@ fun fetchFollowState(userId: Long, apiClient: ApiClient, sessionManager: Session
 
             override fun onResponse(call: Call<UserFollowStateDTO>, response: Response<UserFollowStateDTO>) {
                 if (response.isSuccessful) {
-                    Log.i("UwU", "UwU fetchFollowState SUCCESS")
-                    onSuccess(response.body()!!.state)
+                    val isFollowing = response.body()!!.isUserFollowing
+                    Log.i("UwU", "UwU fetchFollowState SUCCESS $isFollowing")
+                    onSuccess(isFollowing)
 
                 } else {
                     Log.e("UwU", "OwO fetchFollowState FAIL")
