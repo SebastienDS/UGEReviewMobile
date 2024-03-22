@@ -178,6 +178,24 @@ fun createComment(reviewId: Long, content: String, apiClient: ApiClient, onSucce
         })
 }
 
+fun deleteComment(reviewId: Long, commentId: Long, apiClient: ApiClient, onSuccess: () -> Unit) {
+    apiClient.commentService.deleteComment(reviewId, commentId)
+        .enqueue(object : Callback<Void> {
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e("UwU",  "OwO deleteComment", t)
+            }
+
+            override fun onResponse(call: Call<Void>, response: retrofit2.Response<Void>) {
+                if (response.isSuccessful) {
+                    onSuccess()
+                    Log.i("Success", "deleteComment")
+                } else {
+                    Log.e("UwU", "OwO deleteComment FAIL")
+                }
+            }
+        })
+}
+
 fun createResponse(reviewId: Long, commentId: Long, content: String, apiClient: ApiClient, onSuccess: (ResponseDTO) -> Unit) {
     if(content == ""){
         return
@@ -294,7 +312,8 @@ fun ReviewViewer(
     modifier: Modifier,
     onNotificationButtonClick: () -> Unit
 ) {
-    val (comments, setComments) = remember { mutableStateOf(review.comments) }
+    val role = sessionManager.getUserRole()
+    var (comments, setComments) = remember { mutableStateOf(review.comments) }
 
     LazyColumn(modifier) {
         item {
@@ -312,6 +331,15 @@ fun ReviewViewer(
             )
         }
         items(comments) {
+            if(role == Role.ADMIN) {
+                Button(onClick = {
+                    deleteComment(review.id, it.id, apiClient) {
+                        setComments(comments.filter { comment -> comment.id != it.id})
+                    }
+                }) {
+                    Text(text = "Supprimer")
+                }
+            }
             CommentItem(review.id, it, apiClient, sessionManager, navController)
             Divider(
                 color = Color.Black,

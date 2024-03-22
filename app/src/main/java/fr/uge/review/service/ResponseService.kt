@@ -29,4 +29,7 @@ interface ResponseService {
     fun dislikeResponses(@Path("responseId") commentId: Long): Call<LikeStateDTO>
     @POST("/api/v1/reviews/{reviewId}/response")
     fun createResponse(@Path("reviewId") reviewId: Long, @Body content: SendResponseDTO): Call<ResponseDTO>
+
+    @POST("/api/v1/deleteResponse")
+    fun deleteResponse(@Query("reviewId") reviewId: Long, @Body commentId: Long): Call<Void>
 }

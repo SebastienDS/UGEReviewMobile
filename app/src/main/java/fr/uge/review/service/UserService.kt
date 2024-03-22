@@ -57,4 +57,5 @@ interface UserService {
 
     @GET("/api/v1/users/{userId}/follow/state")
     fun fetchFollowState(@Path("userId") userId: Long): Call<UserFollowStateDTO>
+
 }
