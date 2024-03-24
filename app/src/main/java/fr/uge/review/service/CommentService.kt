@@ -14,6 +14,7 @@ interface CommentService {
 
     @POST("/api/v1/comments/{commentId}/dislike")
     fun dislikeComment(@Path("commentId") commentId: Long): Call<LikeStateDTO>
+
     @POST("/api/v1/reviews/{reviewId}/comment")
     fun createComment(@Path("reviewId") reviewId: Long, @Body content: String): Call<CommentDTO>
 

@@ -27,6 +27,7 @@ interface ResponseService {
 
     @POST("/api/v1/responses/{responseId}/dislike")
     fun dislikeResponses(@Path("responseId") commentId: Long): Call<LikeStateDTO>
+
     @POST("/api/v1/reviews/{reviewId}/response")
     fun createResponse(@Path("reviewId") reviewId: Long, @Body content: SendResponseDTO): Call<ResponseDTO>
 

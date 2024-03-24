@@ -61,6 +61,7 @@ fun Connection(
                     .size(300.dp, 60.dp)
                     .padding(16.dp, 8.dp)
                     .border(1.dp, Color.Black)
+                    .padding(16.dp, 8.dp)
                     .background(Color.Transparent)
             )
             Column (Modifier.padding(bottom = 20.dp, top = 20.dp)) {
@@ -72,6 +73,7 @@ fun Connection(
                         .size(300.dp, 60.dp)
                         .padding(16.dp, 8.dp)
                         .border(1.dp, Color.Black)
+                        .padding(16.dp, 8.dp)
                         .background(Color.Transparent)
                 )
                 Text(stringResource(id = R.string.forgetPassword), color = Color.Gray, modifier = Modifier

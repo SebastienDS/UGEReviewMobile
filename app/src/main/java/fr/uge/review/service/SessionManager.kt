@@ -6,6 +6,7 @@ import fr.uge.review.R
 import fr.uge.review.dto.user.Role
 import fr.uge.review.dto.user.UserDataDTO
 import okhttp3.Credentials
+import java.util.Base64
 
 class SessionManager(context: Context) {
     private var prefs: SharedPreferences = context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
@@ -45,4 +46,24 @@ class SessionManager(context: Context) {
     }
 
     fun clear() = prefs.edit().clear().apply()
+
+    private fun getCredentials(): Pair<String, String>? {
+        return getAuthToken()?.let { token ->
+            val base64Credentials = token.split(' ')[1]
+            val credentials = String(Base64.getDecoder().decode(base64Credentials)).split(':')
+            return Pair(credentials[0], credentials[1])
+        }
+    }
+
+    fun updateUsername(newUsername: String) {
+        getCredentials()?.let { (_, password) ->
+            setToken(newUsername, password)
+        }
+    }
+
+    fun updatePassword(newPassword: String) {
+        getCredentials()?.let { (username, _) ->
+            setToken(username, newPassword)
+        }
+    }
 }

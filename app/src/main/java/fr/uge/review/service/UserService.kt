@@ -4,6 +4,7 @@ import fr.uge.review.dto.comment.CommentUserDTO
 import fr.uge.review.dto.like.LikeDTO
 import fr.uge.review.dto.response.ResponseUserDTO
 import fr.uge.review.dto.review.ReviewsDTO
+import fr.uge.review.dto.updatePassword.UpdatePasswordDTO
 import fr.uge.review.dto.user.UserDTO
 import fr.uge.review.dto.user.UserDataDTO
 import fr.uge.review.dto.user.UserFollowStateDTO
@@ -14,6 +15,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -58,4 +60,12 @@ interface UserService {
     @GET("/api/v1/users/{userId}/follow/state")
     fun fetchFollowState(@Path("userId") userId: Long): Call<UserFollowStateDTO>
 
+    @PUT("/api/v1/users/{userId}/updateUsername")
+    fun updateUsername(@Path("userId") userId: Long, @Body newUsername: String): Call<Void>
+
+    @PUT("/api/v1/users/{userId}/updateEmail")
+    fun updateEmail(@Path("userId") userId: Long, @Body newEmail: String): Call<Void>
+
+    @PUT("/api/v1/users/{userId}/updatePassword")
+    fun updatePassword(@Path("userId") userId: Long, @Body passwords: UpdatePasswordDTO): Call<Void>
 }
