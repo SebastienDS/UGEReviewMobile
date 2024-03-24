@@ -49,7 +49,7 @@ fun Home(navController: NavHostController, sessionManager: SessionManager, apiCl
         if (sessionManager.isAuthenticated()) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
                 Button(onClick = { navController.navigate("CreateReview") }) {
-                    Text(stringResource(id = R.string.create))
+                    Text(stringResource(id = R.string.createReview))
                 }
             }
         }

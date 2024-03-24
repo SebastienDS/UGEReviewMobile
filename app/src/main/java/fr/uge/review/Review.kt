@@ -151,7 +151,7 @@ fun ReviewViewer(
             ReviewContent(review, modifier = Modifier.padding(20.dp, 10.dp))
 
             val count = computeCommentsCount(review)
-            Text("$count ${stringResource(id = R.string.create)}:", Modifier.padding(3.dp))
+            Text("$count ${stringResource(id = R.string.responses)}:", Modifier.padding(3.dp))
 
             Divider(
                 color = Color.Black,

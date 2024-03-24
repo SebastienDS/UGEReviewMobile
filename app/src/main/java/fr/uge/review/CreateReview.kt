@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,7 +57,7 @@ fun CreateReview(navController: NavHostController, apiClient: ApiClient, session
                 verticalArrangement = Arrangement.SpaceAround
             ) {
                 Column {
-                    Text(text = "Title")
+                    Text(text = stringResource(id = R.string.title))
                     BasicTextField(
                         value = title,
                         onValueChange = { title = it },
@@ -70,7 +71,7 @@ fun CreateReview(navController: NavHostController, apiClient: ApiClient, session
                     )
                 }
                 Column {
-                    Text(text = "Commentary")
+                    Text(text = stringResource(id = R.string.commentary))
                     BasicTextField(
                         value = commentary,
                         minLines = 2,
@@ -86,7 +87,7 @@ fun CreateReview(navController: NavHostController, apiClient: ApiClient, session
                 }
 
                 Column {
-                    Text(text = "Code")
+                    Text(text = stringResource(id = R.string.code))
                     BasicTextField(
                         value = code,
                         onValueChange = { code = it },
@@ -101,7 +102,7 @@ fun CreateReview(navController: NavHostController, apiClient: ApiClient, session
                     )
                 }
                 Column {
-                    Text(text = "Test")
+                    Text(text = stringResource(id = R.string.test))
                     BasicTextField(
                         value = test,
                         onValueChange = { test = it },
@@ -115,7 +116,7 @@ fun CreateReview(navController: NavHostController, apiClient: ApiClient, session
                             .background(Color.Transparent)
                     )
                 }
-                Text("Create Review", modifier = Modifier
+                Text(stringResource(id = R.string.createReview), modifier = Modifier
                     .border(1.dp, Color.Black)
                     .padding(16.dp, 8.dp)
                     .clickable {

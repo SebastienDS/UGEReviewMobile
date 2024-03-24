@@ -8,10 +8,18 @@
     <string name="disconnect">Log out</string>
     <string name="delete">Delete</string>
     <string name="deleteAccount">Delete my account</string>
-    <string name="create">Create Review</string>
+    <string name="createReview">Create Review</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="respond">Respond</string>
     <string name="comment">Comment</string>
     <string name="date">MM/dd/yyyy</string>
+    <string name="title">Title</string>
+    <string name="commentary">Commentary</string>
+    <string name="code">Code</string>
+    <string name="test">Test</string>
+    <string name="forgetPassword">Forgot password</string>
+    <string name="signUp">Create a new account</string>
+    <string name="createAccount">Create account</string>
+    <string name="connect">Connect</string>
 </resources>

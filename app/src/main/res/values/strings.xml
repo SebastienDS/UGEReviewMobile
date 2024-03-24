@@ -8,10 +8,18 @@
     <string name="disconnect">Se déconnecter</string>
     <string name="delete">Supprimer</string>
     <string name="deleteAccount">Supprimer mon compte</string>
-    <string name="create">Créer une revue</string>
+    <string name="createReview">Créer une revue</string>
     <string name="next">Suivant</string>
     <string name="previous">Précédent</string>
     <string name="respond">Répondre</string>
     <string name="comment">Commenter</string>
     <string name="date">dd/MM/yyyy</string>
+    <string name="title">Titre</string>
+    <string name="commentary">Commentaire</string>
+    <string name="code">Code</string>
+    <string name="test">Test</string>
+    <string name="forgetPassword">Mot de passe oublié</string>
+    <string name="signUp">Créer un compte</string>
+    <string name="createAccount">Créer le compte</string>
+    <string name="connect">Connection</string>
 </resources>

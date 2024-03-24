@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -82,7 +83,8 @@ fun Signup(navController: NavHostController, apiClient: ApiClient, sessionManage
                     .padding(horizontal = 16.dp, vertical = 5.dp)
                     .background(Color.Transparent)
             )
-            Text("Créer le compte", modifier = Modifier
+            Text(
+                stringResource(id = R.string.createAccount), modifier = Modifier
                 .padding(start = 180.dp)
                 .border(1.dp, Color.Black)
                 .padding(20.dp, 15.dp)

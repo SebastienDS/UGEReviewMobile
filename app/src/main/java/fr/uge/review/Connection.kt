@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -73,15 +74,16 @@ fun Connection(
                         .border(1.dp, Color.Black)
                         .background(Color.Transparent)
                 )
-                Text("Mot de passe oublié", color = Color.Gray, modifier = Modifier
+                Text(stringResource(id = R.string.forgetPassword), color = Color.Gray, modifier = Modifier
                     .padding(start = 16.dp)
                     .clickable { /*TODO: navigate when page done*/})
 
-                Text("Créer un compte", color = Color.Gray, modifier = Modifier
+                Text(stringResource(id = R.string.signUp), color = Color.Gray, modifier = Modifier
                     .padding(start = 16.dp, top = 5.dp)
                     .clickable { navController.navigate("Signup") })
             }
-            Text("Connect", modifier = Modifier
+            Text(
+                stringResource(id = R.string.connect), modifier = Modifier
                 .padding(start = 180.dp)
                 .border(1.dp, Color.Black)
                 .padding(20.dp, 15.dp)
