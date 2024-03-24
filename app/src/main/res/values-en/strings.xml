@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Review</string>
+    <string name="review">Review</string>
+    <string name="friends">Friends</string>
+    <string name="comments">Comments</string>
+    <string name="responses">Responses</string>
+    <string name="like">Likes</string>
+    <string name="disconnect">Log out</string>
+    <string name="delete">Delete</string>
+    <string name="deleteAccount">Delete my account</string>
+    <string name="create">Create Review</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="respond">Respond</string>
+    <string name="comment">Comment</string>
+    <string name="date">MM/dd/yyyy</string>
+</resources>

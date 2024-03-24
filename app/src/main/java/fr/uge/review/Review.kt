@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -97,7 +98,7 @@ fun Review(
                     navController.navigate("Home")
                 }
             }) {
-                Text(text = "Supprimer")
+                Text(text = stringResource(id = R.string.delete))
             }
         }
         val modifier = Modifier
@@ -150,7 +151,7 @@ fun ReviewViewer(
             ReviewContent(review, modifier = Modifier.padding(20.dp, 10.dp))
 
             val count = computeCommentsCount(review)
-            Text("$count Réponses:", Modifier.padding(3.dp))
+            Text("$count ${stringResource(id = R.string.create)}:", Modifier.padding(3.dp))
 
             Divider(
                 color = Color.Black,
@@ -166,7 +167,7 @@ fun ReviewViewer(
                         setComments(comments.filter { comment -> comment.id != it.id})
                     }
                 }) {
-                    Text(text = "Supprimer")
+                    Text(text = stringResource(id = R.string.delete))
                 }
             }
             CommentItem(review.id, it, apiClient, sessionManager, navController)
@@ -209,7 +210,7 @@ fun AddComment(
             }
         }
     }) {
-        Text("Commenter")
+        Text(stringResource(id = R.string.comment))
     }
 }
 
@@ -254,7 +255,7 @@ fun ReviewHeader(
                 .weight(1f)
                 .padding(5.dp), verticalArrangement = Arrangement.spacedBy(5.dp), horizontalAlignment = Alignment.End) {
                 Text(review.author.username, Modifier.clickable { navController.navigate("Users/${review.author.id}") })
-                Text(review.date.withFormat("dd/MM/yyyy"))
+                Text(review.date.withFormat(stringResource(id = R.string.date)))
 
                 val content = if (review.unitTests == null) {
                    "Testing"
@@ -340,7 +341,7 @@ fun CommentItem(
                     .padding(10.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(text = comment.author.username, modifier = Modifier.clickable { navController.navigate("Users/${comment.author.id}") })
-                    Text(text = comment.date.withFormat("dd/MM/yyyy"))
+                    Text(text = comment.date.withFormat(stringResource(id = R.string.date)))
                 }
 
                 Box(modifier = Modifier
@@ -373,7 +374,7 @@ fun CommentItem(
             }
         }else{
             Button(onClick = {isResponding = true}) {
-                Text("Répondre")
+                Text(stringResource(id = R.string.respond))
             }
         }
     }
@@ -404,7 +405,7 @@ fun AddResponse(
             onSuccess(it)
         }
     }) {
-        Text("Commenter")
+        Text(stringResource(id = R.string.respond))
     }
 }
 
@@ -455,7 +456,7 @@ fun ResponseItem(response: ResponseDTO,
                 Text(
                     text = response.author.username,
                     modifier = Modifier.clickable { navController.navigate("Users/${response.author.id}") })
-                Text(text = response.date.withFormat("dd/MM/yyyy"))
+                Text(text = response.date.withFormat(stringResource(id = R.string.date)))
             }
 
             Box(modifier = Modifier

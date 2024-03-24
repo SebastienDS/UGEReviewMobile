@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,18 +24,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.material3.Button
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import fr.uge.review.dto.user.UserFollowStateDTO
 import fr.uge.review.dto.user.UserProfileDTO
 import fr.uge.review.service.SessionManager
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 @Composable
 fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
@@ -46,7 +43,7 @@ fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
                 .height(100.dp)
                 .fillMaxWidth()
                 .clickable { navController.navigate("Users/$userId/reviews") }){
-            Text("Revue")
+            Text(stringResource(id = R.string.review))
         }
         Divider(
             color = Color.Black,
@@ -59,7 +56,7 @@ fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
                 .height(100.dp)
                 .fillMaxWidth()
                 .clickable { navController.navigate("Users/$userId/comments") }){
-            Text("Commentaire")
+            Text(stringResource(id = R.string.comments))
         }
         Divider(
             color = Color.Black,
@@ -72,7 +69,7 @@ fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
                 .height(100.dp)
                 .fillMaxWidth()
                 .clickable { navController.navigate("Users/$userId/responses") }){
-            Text("Réponse")
+            Text(stringResource(id = R.string.responses))
         }
         Divider(
             color = Color.Black,
@@ -85,7 +82,7 @@ fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
                 .height(100.dp)
                 .fillMaxWidth()
                 .clickable { navController.navigate("Users/$userId/friends") }){
-            Text("Amis")
+            Text(stringResource(id = R.string.friends))
         }
         Divider(
             color = Color.Black,
@@ -98,7 +95,7 @@ fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
                 .height(100.dp)
                 .fillMaxWidth()
                 .clickable { navController.navigate("Users/$userId/likes") }){
-            Text("Likes")
+            Text(stringResource(id = R.string.like))
         }
         Divider(
             color = Color.Black,
@@ -191,7 +188,7 @@ fun Profile(
                             navController.navigate("Connection")
                         }
                     }){
-                Text("Se déconnecter")
+                Text(stringResource(id = R.string.disconnect))
             }
             if (sessionManager.isAuthenticated() && sessionManager.getUserId() == userId) {
                 Box(modifier = Modifier
@@ -201,7 +198,7 @@ fun Profile(
                             navController.navigate("Connection")
                         }
                     }){
-                    Text("Supprimer mon compte")
+                    Text(stringResource(id = R.string.deleteAccount))
                 }
             }
         }

@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -48,7 +49,7 @@ fun Home(navController: NavHostController, sessionManager: SessionManager, apiCl
         if (sessionManager.isAuthenticated()) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
                 Button(onClick = { navController.navigate("CreateReview") }) {
-                    Text("Create Review")
+                    Text(stringResource(id = R.string.create))
                 }
             }
         }
@@ -103,7 +104,7 @@ fun Content(navController: NavHostController, modifier: Modifier, showAbles: Lis
 
                             ) {
                                 Text(text = showAble.author.username, modifier = Modifier.clickable { navController.navigate("Users/${showAble.author.id}") })
-                                Text(text = showAble.date.withFormat("dd/MM/yyyy hh:mm:ss"))
+                                Text(text = showAble.date.withFormat("${stringResource(id = R.string.date)} hh:mm:ss"))
                             }
                         }
                         Divider(
@@ -120,13 +121,13 @@ fun Content(navController: NavHostController, modifier: Modifier, showAbles: Lis
                     onClick = previous,
                     modifier = Modifier.weight(0.5f)
                 ) {
-                    Text(text = "Précedent")
+                    Text(text = stringResource(id = R.string.previous))
                 }
                 Button(
                     onClick = next,
                     modifier = Modifier.weight(0.5f)
                 ) {
-                    Text(text = "Suivant")
+                    Text(text = stringResource(id = R.string.next))
                 }
             }
         }
