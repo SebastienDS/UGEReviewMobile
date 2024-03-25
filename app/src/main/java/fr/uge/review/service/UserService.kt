@@ -68,4 +68,7 @@ interface UserService {
 
     @PUT("/api/v1/users/{userId}/updatePassword")
     fun updatePassword(@Path("userId") userId: Long, @Body passwords: UpdatePasswordDTO): Call<Void>
+
+    @POST("/api/v1/banProfile")
+    fun banProfile(@Body id: Long): Call<Void>
 }

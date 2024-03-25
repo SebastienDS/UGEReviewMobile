@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import fr.uge.review.dto.updatePassword.UpdatePasswordDTO
+import fr.uge.review.dto.user.Role
 import fr.uge.review.dto.user.UserProfileDTO
 import fr.uge.review.service.SessionManager
 
@@ -126,6 +127,7 @@ fun Profile(
     }
     var userProfile: UserProfileDTO? by remember { mutableStateOf(null) }
     var isFollowing by remember { mutableStateOf(false) }
+    val role = sessionManager.getUserRole()
 
 
     LaunchedEffect(Unit) {
@@ -221,6 +223,16 @@ fun Profile(
                                 }
                             }) {
                             Text(stringResource(id = R.string.deleteAccount))
+                        }
+                    }
+                    if (role == Role.ADMIN && sessionManager.getUserId() != userId) {
+                        Box(modifier = Modifier
+                            .clickable {
+                                handleCall(apiClient.userService.banProfile(userId)) {
+                                    navController.navigate("Home")
+                                }
+                            }) {
+                            Text(stringResource(id = R.string.banAccount))
                         }
                     }
                 }

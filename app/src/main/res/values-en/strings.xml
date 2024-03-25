@@ -22,4 +22,5 @@
     <string name="signUp">Create a new account</string>
     <string name="createAccount">Create account</string>
     <string name="connect">Connect</string>
+    <string name="banAccount">Ban account</string>
 </resources>
