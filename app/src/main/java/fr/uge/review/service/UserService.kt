@@ -4,13 +4,15 @@ import fr.uge.review.dto.comment.CommentUserDTO
 import fr.uge.review.dto.like.LikeDTO
 import fr.uge.review.dto.response.ResponseUserDTO
 import fr.uge.review.dto.review.ReviewsDTO
-import fr.uge.review.dto.updatePassword.UpdatePasswordDTO
+import fr.uge.review.dto.user.update.UpdatePasswordDTO
 import fr.uge.review.dto.user.UserDTO
 import fr.uge.review.dto.user.UserDataDTO
 import fr.uge.review.dto.user.UserFollowStateDTO
 import fr.uge.review.dto.user.UserLoginDTO
 import fr.uge.review.dto.user.UserProfileDTO
 import fr.uge.review.dto.user.UserSignUpDTO
+import fr.uge.review.dto.user.update.UpdateEmailDTO
+import fr.uge.review.dto.user.update.UpdateUsernameDTO
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -61,10 +63,10 @@ interface UserService {
     fun fetchFollowState(@Path("userId") userId: Long): Call<UserFollowStateDTO>
 
     @PUT("/api/v1/users/{userId}/updateUsername")
-    fun updateUsername(@Path("userId") userId: Long, @Body newUsername: String): Call<Void>
+    fun updateUsername(@Path("userId") userId: Long, @Body newUsername: UpdateUsernameDTO): Call<Void>
 
     @PUT("/api/v1/users/{userId}/updateEmail")
-    fun updateEmail(@Path("userId") userId: Long, @Body newEmail: String): Call<Void>
+    fun updateEmail(@Path("userId") userId: Long, @Body newEmail: UpdateEmailDTO): Call<Void>
 
     @PUT("/api/v1/users/{userId}/updatePassword")
     fun updatePassword(@Path("userId") userId: Long, @Body passwords: UpdatePasswordDTO): Call<Void>

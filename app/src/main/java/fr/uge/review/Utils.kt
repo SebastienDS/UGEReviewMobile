@@ -23,18 +23,18 @@ fun Icon(imageVector: ImageVector, modifier: Modifier, onClick: () -> Unit) {
 
 fun Date.withFormat(format: String): String = SimpleDateFormat(format).format(this)
 
-fun <T> handleCall(call: Call<T>, onFailure: (Throwable?) -> Unit = {}, onSuccess: (T) -> Unit) =
+fun <T> handleCall(call: Call<T>, onFailure: (Throwable?) -> Unit = { Log.i("UwU", "fail $it") }, onSuccess: (T) -> Unit) =
     call.enqueue(object : Callback<T> {
             override fun onFailure(call: Call<T>, t: Throwable) = onFailure(t)
 
             override fun onResponse(call: Call<T>, response: Response<T>) =
-                if (response.isSuccessful) onSuccess(response.body()!!) else onFailure(null)
+                if (response.isSuccessful) onSuccess(response.body()!!) else onFailure(Throwable(response.toString()))
         })
 
-fun handleCall(call: Call<Void>, onFailure: (Throwable?) -> Unit = {}, onSuccess: () -> Unit) =
+fun handleCall(call: Call<Void>, onFailure: (Throwable?) -> Unit = { Log.i("UwU", "fail $it") }, onSuccess: () -> Unit) =
     call.enqueue(object : Callback<Void> {
         override fun onFailure(call: Call<Void>, t: Throwable) = onFailure(t)
 
         override fun onResponse(call: Call<Void>, response: Response<Void>) =
-            if (response.isSuccessful) onSuccess() else onFailure(null)
+            if (response.isSuccessful) onSuccess() else onFailure(Throwable(response.toString()))
     })

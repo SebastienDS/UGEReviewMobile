@@ -29,6 +29,8 @@ class MainActivity : ComponentActivity() {
                     val sessionManager = SessionManager(this)
                     val apiClient = ApiClient(this)
 
+                    sessionManager.clear()
+
                     Application(apiClient, sessionManager)
                 }
             }

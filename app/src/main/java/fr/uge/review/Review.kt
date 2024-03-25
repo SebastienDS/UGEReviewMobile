@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import fr.uge.review.dto.comment.CommentDTO
+import fr.uge.review.dto.comment.NewCommentDTO
 import fr.uge.review.dto.like.LikeState
 import fr.uge.review.dto.like.LikeStateDTO
 import fr.uge.review.dto.response.ResponseDTO
@@ -204,7 +205,7 @@ fun AddComment(
             .background(Color.Transparent))
     Button(onClick = {
         if (content != "") {
-            handleCall(apiClient.commentService.createComment(reviewId, content)) {
+            handleCall(apiClient.commentService.createComment(reviewId, NewCommentDTO(content))) {
                 content = ""
                 addComment(it)
             }

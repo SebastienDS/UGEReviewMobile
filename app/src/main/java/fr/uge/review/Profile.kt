@@ -7,15 +7,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
@@ -39,9 +36,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import fr.uge.review.dto.updatePassword.UpdatePasswordDTO
+import fr.uge.review.dto.user.update.UpdatePasswordDTO
 import fr.uge.review.dto.user.Role
 import fr.uge.review.dto.user.UserProfileDTO
+import fr.uge.review.dto.user.update.UpdateEmailDTO
+import fr.uge.review.dto.user.update.UpdateUsernameDTO
 import fr.uge.review.service.SessionManager
 
 @Composable
@@ -167,7 +166,7 @@ fun Profile(
             if (userProfile != null) {
                 if (sessionManager.isAuthenticated() && sessionManager.getUserId() == userId) {
                     ModifiableField(userProfile!!.username) {
-                        handleCall(apiClient.userService.updateUsername(userId, it)) {
+                        handleCall(apiClient.userService.updateUsername(userId, UpdateUsernameDTO(it))) {
                             userProfile = userProfile!!.copy(username = it)
                             Log.i("UwU", sessionManager.getAuthToken().toString())
                             sessionManager.updateUsername(it)
@@ -182,7 +181,7 @@ fun Profile(
                 }
                 if (sessionManager.isAuthenticated() && sessionManager.getUserId() == userId) {
                     ModifiableField(userProfile!!.email) {
-                        handleCall(apiClient.userService.updateEmail(userId, it)) {
+                        handleCall(apiClient.userService.updateEmail(userId, UpdateEmailDTO(it))) {
                             userProfile = userProfile!!.copy(email = it)
                         }
                     }
