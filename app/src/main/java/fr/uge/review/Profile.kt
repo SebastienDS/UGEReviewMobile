@@ -129,10 +129,7 @@ fun Profile(
 
 
     LaunchedEffect(Unit) {
-        handleCall(apiClient.userService.userProfile(userId), onFailure = {
-            Log.i("UwU", "User $userId not found")
-            navController.navigate("NotFound")
-        }) {
+        handleCall(apiClient.userService.userProfile(userId)) {
             userProfile = it
         }
         handleCall(apiClient.userService.fetchFollowState(userId)) {

@@ -1,6 +1,5 @@
 package fr.uge.review
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,14 +26,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import fr.uge.review.dto.user.UserDataDTO
 import fr.uge.review.dto.user.UserLoginDTO
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 @Composable
 fun Connection(
@@ -58,7 +52,7 @@ fun Connection(
                 onValueChange = { username = it },
                 textStyle = TextStyle.Default.copy(fontSize = 30.sp),
                 modifier = Modifier
-                    .size(300.dp, 60.dp)
+                    .width(300.dp)
                     .padding(16.dp, 8.dp)
                     .border(1.dp, Color.Black)
                     .padding(16.dp, 8.dp)
@@ -70,7 +64,7 @@ fun Connection(
                     onValueChange = { password = it },
                     textStyle = TextStyle.Default.copy(fontSize = 30.sp),
                     modifier = Modifier
-                        .size(300.dp, 60.dp)
+                        .width(300.dp)
                         .padding(16.dp, 8.dp)
                         .border(1.dp, Color.Black)
                         .padding(16.dp, 8.dp)

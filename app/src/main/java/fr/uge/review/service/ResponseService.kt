@@ -32,5 +32,5 @@ interface ResponseService {
     fun createResponse(@Path("reviewId") reviewId: Long, @Body content: SendResponseDTO): Call<ResponseDTO>
 
     @POST("/api/v1/deleteResponse")
-    fun deleteResponse(@Query("reviewId") reviewId: Long, @Body commentId: Long): Call<Void>
+    fun deleteResponse(@Body responseId: Long): Call<Void>
 }

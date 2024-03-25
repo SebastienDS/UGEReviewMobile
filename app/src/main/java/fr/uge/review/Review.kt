@@ -318,6 +318,8 @@ fun CommentItem(
 ) {
     var like by remember { mutableIntStateOf(comment.likes) }
     var likeStateRemember by remember { mutableStateOf(comment.likeState) }
+    val role = sessionManager.getUserRole()
+
     Column {
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.width(50.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -360,7 +362,15 @@ fun CommentItem(
                     .fillMaxWidth()
                     .height(1.dp),
             )
-
+            if(role == Role.ADMIN) {
+                Button(onClick = {
+                    handleCall(apiClient.responseService.deleteResponse(it.id)) {
+                        setResponses(responses.filter { response -> response.id != it.id})
+                    }
+                }) {
+                    Text(text = stringResource(id = R.string.delete))
+                }
+            }
             Box(modifier = Modifier.padding(start = 30.dp)) {
                 ResponseItem(it, apiClient, sessionManager, navController)
             }

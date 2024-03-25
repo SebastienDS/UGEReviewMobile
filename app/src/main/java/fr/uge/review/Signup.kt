@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,7 +54,7 @@ fun Signup(navController: NavHostController, apiClient: ApiClient, sessionManage
                 onValueChange = { username = it },
                 textStyle = TextStyle.Default.copy(fontSize = 30.sp),
                 modifier = Modifier
-                    .size(300.dp, 60.dp)
+                    .width(300.dp)
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .border(1.dp, Color.Black)
                     .padding(horizontal = 16.dp, vertical = 5.dp)
@@ -65,7 +66,7 @@ fun Signup(navController: NavHostController, apiClient: ApiClient, sessionManage
                 onValueChange = { email = it },
                 textStyle = TextStyle.Default.copy(fontSize = 30.sp),
                 modifier = Modifier
-                    .size(300.dp, 60.dp)
+                    .width(300.dp)
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .border(1.dp, Color.Black)
                     .padding(horizontal = 16.dp, vertical = 5.dp)
@@ -77,7 +78,7 @@ fun Signup(navController: NavHostController, apiClient: ApiClient, sessionManage
                 onValueChange = { password = it },
                 textStyle = TextStyle.Default.copy(fontSize = 30.sp),
                 modifier = Modifier
-                    .size(300.dp, 60.dp)
+                    .width(300.dp)
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .border(1.dp, Color.Black)
                     .padding(horizontal = 16.dp, vertical = 5.dp)
