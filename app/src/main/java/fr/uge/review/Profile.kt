@@ -45,7 +45,7 @@ import fr.uge.review.service.SessionManager
 
 @Composable
 fun Menu(navController: NavHostController, userId: Long, modifier: Modifier) {
-    Column(modifier.background(Color.White)) {
+    Column(modifier) {
         Box(contentAlignment = Alignment.Center,
             modifier = Modifier
                 .height(100.dp)
