@@ -180,7 +180,9 @@ fun ReviewViewer(
             )
         }
         item{
-            AddComment(review.id, apiClient){setComments(comments + it)}
+            if(sessionManager.isAuthenticated()){
+                AddComment(review.id, apiClient){setComments(comments + it)}
+            }
         }
     }
 }
@@ -376,16 +378,17 @@ fun CommentItem(
                 ResponseItem(it, apiClient, sessionManager, navController)
             }
         }
-
-        var isResponding by remember { mutableStateOf(false) }
-        if(isResponding){
-            AddResponse(reviewId, comment.id, apiClient){
-                isResponding = false
-                setResponses(responses + it)
-            }
-        }else{
-            Button(onClick = {isResponding = true}) {
-                Text(stringResource(id = R.string.respond))
+        if(sessionManager.isAuthenticated()) {
+            var isResponding by remember { mutableStateOf(false) }
+            if (isResponding) {
+                AddResponse(reviewId, comment.id, apiClient) {
+                    isResponding = false
+                    setResponses(responses + it)
+                }
+            } else {
+                Button(onClick = { isResponding = true }) {
+                    Text(stringResource(id = R.string.respond))
+                }
             }
         }
     }

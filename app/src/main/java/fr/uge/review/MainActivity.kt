@@ -1,6 +1,11 @@
 package fr.uge.review
 
+import android.content.ComponentName
+import fr.uge.review.broadcastReceiver.NewAnswerFetchService
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,11 +13,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import fr.uge.review.broadcastReceiver.NewAnswerReceiver
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
 
@@ -21,16 +28,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ReviewTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val sessionManager = SessionManager(this)
                     val apiClient = ApiClient(this)
-
-                    sessionManager.clear()
-
+                    val serviceIntent = Intent(this, NewAnswerFetchService::class.java)
+                    startService(serviceIntent)
                     Application(apiClient, sessionManager)
                 }
             }
