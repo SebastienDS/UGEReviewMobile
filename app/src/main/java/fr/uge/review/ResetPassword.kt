@@ -26,30 +26,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import fr.uge.review.dto.user.UserLoginDTO
+import fr.uge.review.dto.resetPassword.AskEmailDTO
 import fr.uge.review.service.SessionManager
 import fr.uge.review.ui.theme.ReviewTheme
 
+enum class State {
+    SUCCESS,
+    FAILED,
+    DEFAULT
+}
+
 @Composable
-fun Connection(
+fun ResetPassword(
     navController: NavHostController,
     apiClient: ApiClient,
     sessionManager: SessionManager
 ) {
-    var username by remember{ mutableStateOf("")}
-    var password by remember{ mutableStateOf("")}
+    var email by remember{ mutableStateOf("")}
+    var state by remember {
+        mutableStateOf(State.DEFAULT)
+    }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f),
+        Column (Modifier.padding(bottom = 20.dp, top = 20.dp)
+            .fillMaxSize()
+            .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+            verticalArrangement = Arrangement.Center) {
             BasicTextField(
-                value = username,
-                onValueChange = { username = it },
+                value = email,
+                onValueChange = { email = it },
                 textStyle = TextStyle.Default.copy(fontSize = 30.sp),
                 modifier = Modifier
                     .width(300.dp)
@@ -58,42 +64,39 @@ fun Connection(
                     .padding(16.dp, 8.dp)
                     .background(Color.Transparent)
             )
-            Column (Modifier.padding(bottom = 20.dp, top = 20.dp)) {
-                BasicTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    textStyle = TextStyle.Default.copy(fontSize = 30.sp),
-                    modifier = Modifier
-                        .width(300.dp)
-                        .padding(16.dp, 8.dp)
-                        .border(1.dp, Color.Black)
-                        .padding(16.dp, 8.dp)
-                        .background(Color.Transparent)
-                )
-                Text(stringResource(id = R.string.forgetPassword), color = Color.Gray, modifier = Modifier
-                    .padding(start = 16.dp)
-                    .clickable { navController.navigate("ResetPassword") })
-
-                Text(stringResource(id = R.string.signUp), color = Color.Gray, modifier = Modifier
-                    .padding(start = 16.dp, top = 5.dp)
-                    .clickable { navController.navigate("Signup") })
-            }
             Text(
-                stringResource(id = R.string.connect), modifier = Modifier
-                .padding(start = 180.dp)
-                .border(1.dp, Color.Black)
-                .padding(20.dp, 15.dp)
-                .clickable {
-                    handleCall(apiClient.userService.login(UserLoginDTO(username, password)), onFailure = {
-                        username = ""
-                        password = ""
-                    }) {
-                        sessionManager.setToken(username, password)
-                        sessionManager.setUserData(it)
-                        navController.navigate("Users/${sessionManager.getUserId()}")
-                    }
-                })
+                stringResource(id = R.string.send), modifier = Modifier
+                    .padding(start = 180.dp)
+                    .border(1.dp, Color.Black)
+                    .padding(20.dp, 15.dp)
+                    .clickable {
+                        handleCall(
+                            apiClient.resetPasswordService.resetPassword(AskEmailDTO(email)),
+                            onFailure = {
+                                email = ""
+                                state = State.FAILED
+                            }) {
+                            state = State.SUCCESS
+                        }
+                    })
+            if (state == State.SUCCESS) {
+                Text(
+                    stringResource(id = R.string.emailSend), modifier = Modifier
+                        .padding(20.dp, 15.dp)
+                        .border(1.dp, Color.Black)
+                        .padding(20.dp, 15.dp))
+
+            }
+            else if (state == State.FAILED) {
+                Text(
+                    stringResource(id = R.string.emailNotSend), modifier = Modifier
+                        .padding(20.dp, 15.dp)
+                        .border(1.dp, Color.Black)
+                        .padding(20.dp, 15.dp))
+
+            }
         }
+
         Footer(navController, sessionManager = sessionManager,
             modifier = Modifier
                 .height(50.dp)
@@ -104,7 +107,7 @@ fun Connection(
 
 @Preview(showBackground = true)
 @Composable
-fun ConnectionPreview() {
+fun ResetPasswordPreview() {
     ReviewTheme {
     }
 }

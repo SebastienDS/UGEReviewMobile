@@ -4,6 +4,7 @@ import android.content.Context
 import fr.uge.review.service.CommentService
 import fr.uge.review.service.ResponseService
 import fr.uge.review.service.NotificationService
+import fr.uge.review.service.ResetPasswordService
 import fr.uge.review.service.ReviewService
 import fr.uge.review.service.SessionManager
 import fr.uge.review.service.UserService
@@ -50,6 +51,10 @@ class ApiClient(context: Context) {
 
     val notificationService: NotificationService by lazy {
         retrofit.create(NotificationService::class.java)
+    }
+
+    val resetPasswordService: ResetPasswordService by lazy {
+        retrofit.create(ResetPasswordService::class.java)
     }
 }
 

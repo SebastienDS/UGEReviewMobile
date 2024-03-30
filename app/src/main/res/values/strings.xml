@@ -25,4 +25,7 @@
     <string name="banAccount">Bannir le compte</string>
     <string name="titleNotification">Nouvelle Notification</string>
     <string name="messageNotification">Vous avez reçu une nouvelle notification</string>
+    <string name="send">Envoyer</string>
+    <string name="emailSend">emailSend</string>
+    <string name="emailNotSend">emailNotSend</string>
 </resources>

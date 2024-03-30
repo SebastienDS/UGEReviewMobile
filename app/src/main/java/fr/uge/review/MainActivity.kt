@@ -136,6 +136,9 @@ fun AppNavigation(apiClient: ApiClient, sessionManager: SessionManager) {
         composable("Notifications") {
             Notifications(navController = navController, apiClient = apiClient, sessionManager = sessionManager)
         }
+        composable("ResetPassword") {
+            ResetPassword(navController = navController, apiClient = apiClient, sessionManager = sessionManager)
+        }
     }
 }
 

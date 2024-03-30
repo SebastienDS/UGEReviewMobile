@@ -25,4 +25,7 @@
     <string name="banAccount">Bannir le compte</string>
     <string name="titleNotification">Nouvelle Notification</string>
     <string name="messageNotification">Vous avez reçu une nouvelle notification</string>
+    <string name="send">Envoyer</string>
+    <string name="emailSend">"Email de récupération du compte envoyé sur votre adresse email "</string>
+    <string name="emailNotSend">L\'email ne correspond à aucun compte</string>
 </resources>

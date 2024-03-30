@@ -25,4 +25,7 @@
     <string name="banAccount">Ban account</string>
     <string name="titleNotification">New Notification</string>
     <string name="messageNotification">You received a new notification</string>
+    <string name="send">Send</string>
+    <string name="emailSend">Account recovery email sent to your email address</string>
+    <string name="emailNotSend">The email does not match any account</string>
 </resources>
