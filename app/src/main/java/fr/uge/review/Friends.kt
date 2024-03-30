@@ -57,7 +57,6 @@ fun Friends(
     Column {
         FriendsViewer(navController, friends, modifier = Modifier
             .weight(1f)
-            .background(Color.White)
             .fillMaxWidth(),
             previous = {
                 page--
@@ -86,14 +85,15 @@ fun FriendsViewer(navController: NavHostController, friends: List<UserDTO>?, mod
     }else{
         LazyColumn(modifier = modifier) {
             items(friends) {
-                FriendRow(navController,
+                FriendRow(
+                    navController,
                     it,
                     Modifier
                         .fillMaxWidth()
                         .height(50.dp),
                     onUnfollow,
-                    sessionManager,
-                    apiClient)
+                    apiClient
+                )
                 Divider(
                     color = Color.Black,
                     modifier = Modifier
@@ -120,8 +120,10 @@ fun FriendsViewer(navController: NavHostController, friends: List<UserDTO>?, mod
 }
 
 @Composable
-fun FriendRow(navController: NavHostController, friend: UserDTO, modifier: Modifier,
-              onUnfollow: (UserDTO) -> Unit, sessionManager: SessionManager, apiClient: ApiClient) {
+fun FriendRow(
+    navController: NavHostController, friend: UserDTO, modifier: Modifier,
+    onUnfollow: (UserDTO) -> Unit, apiClient: ApiClient
+) {
     Row(modifier) {
         FriendItem(navController, friend, Modifier.weight(1f))
         Box(Modifier.width(100.dp), contentAlignment = Alignment.Center) {
@@ -139,7 +141,7 @@ fun FriendRow(navController: NavHostController, friend: UserDTO, modifier: Modif
 @Composable
 fun FriendItem(navController: NavHostController, friend: UserDTO, modifier: Modifier) {
     Box(modifier.clickable { navController.navigate("Users/${friend.id}") }) {
-        Text(friend.username, color = Color.Black)
+        Text(friend.username)
     }
 }
 

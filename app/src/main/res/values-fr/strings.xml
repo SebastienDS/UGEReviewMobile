@@ -23,4 +23,6 @@
     <string name="createAccount">Créer le compte</string>
     <string name="connect">Connection</string>
     <string name="banAccount">Bannir le compte</string>
+    <string name="titleNotification">Nouvelle Notification</string>
+    <string name="messageNotification">Vous avez reçu une nouvelle notification</string>
 </resources>

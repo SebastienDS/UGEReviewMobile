@@ -1,6 +1,7 @@
 package fr.uge.review.service
 
 import fr.uge.review.dto.comment.CommentDTO
+import fr.uge.review.dto.comment.NewCommentDTO
 import fr.uge.review.dto.like.LikeStateDTO
 import retrofit2.Call
 import retrofit2.http.Body
@@ -16,7 +17,7 @@ interface CommentService {
     fun dislikeComment(@Path("commentId") commentId: Long): Call<LikeStateDTO>
 
     @POST("/api/v1/reviews/{reviewId}/comment")
-    fun createComment(@Path("reviewId") reviewId: Long, @Body content: String): Call<CommentDTO>
+    fun createComment(@Path("reviewId") reviewId: Long, @Body content: NewCommentDTO): Call<CommentDTO>
 
     @POST("/api/v1/deleteComment")
     fun deleteComment(@Query("reviewId") reviewId: Long, @Body commentId: Long): Call<Void>

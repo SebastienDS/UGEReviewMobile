@@ -88,33 +88,15 @@ fun CreateReview(navController: NavHostController, apiClient: ApiClient, session
 
                 Column {
                     Text(text = stringResource(id = R.string.code))
-                    BasicTextField(
-                        value = code,
-                        onValueChange = { code = it },
-                        minLines = 5,
-                        maxLines = 5,
-                        textStyle = TextStyle.Default.copy(fontSize = 15.sp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(1.dp, Color.Black)
-                            .padding(16.dp, 8.dp)
-                            .background(Color.Transparent)
-                    )
+                    EditableCodeBlock(code = code) {
+                        code = it
+                    }
                 }
                 Column {
                     Text(text = stringResource(id = R.string.test))
-                    BasicTextField(
-                        value = test,
-                        onValueChange = { test = it },
-                        minLines = 5,
-                        maxLines = 5,
-                        textStyle = TextStyle.Default.copy(fontSize = 15.sp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(1.dp, Color.Black)
-                            .padding(16.dp, 8.dp)
-                            .background(Color.Transparent)
-                    )
+                    EditableCodeBlock(code = test) {
+                        test = it
+                    }
                 }
                 Text(stringResource(id = R.string.createReview), modifier = Modifier
                     .border(1.dp, Color.Black)
