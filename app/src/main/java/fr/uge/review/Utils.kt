@@ -5,9 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,7 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.wakaztahir.codeeditor.highlight.model.CodeLang
 import com.wakaztahir.codeeditor.highlight.prettify.PrettifyParser
 import com.wakaztahir.codeeditor.highlight.theme.CodeThemeType
@@ -101,4 +107,45 @@ fun InjectCodeBlock(content: String) {
             Text(text = trimmedContent.substring(lastIndex))
         }
     }
+}
+
+@Composable
+fun EditableCodeBlock(code: String, onValueChange: (String) -> Unit) {
+    val parser = remember { PrettifyParser() }
+    var textFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                annotatedString = parseCodeAsAnnotatedString(
+                    parser = parser,
+                    theme = theme,
+                    lang = language,
+                    code = code
+                )
+            )
+        )
+    }
+
+    BasicTextField(
+        value = textFieldValue,
+        onValueChange = {
+            textFieldValue = it.copy(
+                annotatedString = parseCodeAsAnnotatedString(
+                    parser = parser,
+                    theme = theme,
+                    lang = language,
+                    code = it.text
+                )
+            )
+            onValueChange(it.text)
+        },
+        minLines = 5,
+        maxLines = 5,
+        textStyle = TextStyle.Default.copy(fontSize = 15.sp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(themeBackground)
+            .border(1.dp, Color.Black)
+            .padding(16.dp, 8.dp)
+            .background(Color.Transparent)
+    )
 }
