@@ -148,7 +148,7 @@ fun ReviewViewer(
     LazyColumn(modifier) {
         item {
             ReviewHeader(navController, review, isRequestingNotification, onNotificationButtonClick, sessionManager, apiClient)
-            ReviewContent(review, modifier = Modifier.padding(20.dp, 10.dp))
+            ReviewContent(review)
 
             val count = computeCommentsCount(review)
             Text("$count ${stringResource(id = R.string.responses)}:", Modifier.padding(3.dp))
@@ -268,17 +268,17 @@ fun ReviewHeader(
                 } else {
                    "Error"
                 }
-                Text(text = content, modifier = Modifier
-                   .let {
-                       if (review.unitTests == null) it.background(Color.Blue)
-                       if (review.unitTests!!.errors.isNotEmpty()) it.background(Color.Red)
-                       else if (review.unitTests.succeededCount == review.unitTests.totalCount) it.background(
-                           Color.Green
-                       )
-                       else it.background(Color.Yellow)
-                   }
-                   .border(1.dp, Color.Black)
-                   .padding(20.dp)
+                Text(text = content, color = Color.Black, modifier = Modifier
+                    .let {
+                        if (review.unitTests == null) it.background(Color.Blue)
+                        if (review.unitTests!!.errors.isNotEmpty()) it.background(Color.Red)
+                        else if (review.unitTests.succeededCount == review.unitTests.totalCount) it.background(
+                            Color.Green
+                        )
+                        else it.background(Color.Yellow)
+                    }
+                    .border(1.dp, Color.Black)
+                    .padding(20.dp)
                 )
 
                 if (sessionManager.isAuthenticated()) {
@@ -297,16 +297,22 @@ fun ReviewHeader(
 }
 
 @Composable
-fun ReviewContent(review: ReviewOneReviewDTO, modifier: Modifier) {
+fun ReviewContent(review: ReviewOneReviewDTO) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(review.code, modifier = modifier
+        CodeBlock(code = review.code, Modifier
             .fillMaxWidth()
+            .padding(20.dp, 10.dp)
+            .background(themeBackground)
             .border(1.dp, Color.Black)
-            .padding(20.dp))
-        Text(review.test, modifier = modifier
+            .padding(20.dp)
+        )
+        CodeBlock(code = review.test, Modifier
             .fillMaxWidth()
+            .padding(20.dp, 10.dp)
+            .background(themeBackground)
             .border(1.dp, Color.Black)
-            .padding(20.dp))
+            .padding(20.dp)
+        )
     }
 }
 
@@ -351,7 +357,7 @@ fun CommentItem(
                 Box(modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)) {
-                    Text(text = comment.content)
+                    InjectCodeBlock(content = comment.content)
                 }
             }
         }
@@ -475,7 +481,7 @@ fun ResponseItem(response: ResponseDTO,
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp)) {
-                Text(text = response.content)
+                InjectCodeBlock(content = response.content)
             }
         }
     }
