@@ -104,7 +104,6 @@ fun Review(
         }
         val modifier = Modifier
             .weight(1f)
-            .background(Color.White)
             .fillMaxWidth()
 
         if (review == null) {

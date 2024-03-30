@@ -57,7 +57,6 @@ fun Friends(
     Column {
         FriendsViewer(navController, friends, modifier = Modifier
             .weight(1f)
-            .background(Color.White)
             .fillMaxWidth(),
             previous = {
                 page--
@@ -142,7 +141,7 @@ fun FriendRow(
 @Composable
 fun FriendItem(navController: NavHostController, friend: UserDTO, modifier: Modifier) {
     Box(modifier.clickable { navController.navigate("Users/${friend.id}") }) {
-        Text(friend.username, color = Color.Black)
+        Text(friend.username)
     }
 }
 
