@@ -54,8 +54,7 @@ fun Search(navController: NavHostController, sessionManager: SessionManager, api
         Content(
             navController = navController, modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth()
-                .clickable { navController.navigate("Search") },
+                .fillMaxWidth(),
             "Search",
                 reviews,
             {
