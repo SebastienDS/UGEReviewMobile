@@ -37,6 +37,7 @@ fun UserComments(
         Content(navController, modifier = Modifier
             .weight(1f)
             .fillMaxWidth(),
+            "Users/$userId/comments",
             showAbles = comments,
             previous = {
                 page--

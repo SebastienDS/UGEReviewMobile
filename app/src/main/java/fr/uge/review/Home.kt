@@ -56,6 +56,7 @@ fun Home(navController: NavHostController, sessionManager: SessionManager, apiCl
         Content(navController, modifier = Modifier
             .weight(1f)
             .fillMaxWidth(),
+            "Home",
             showAbles = reviews,
             previous = {
                 page--
@@ -70,10 +71,10 @@ fun Home(navController: NavHostController, sessionManager: SessionManager, apiCl
 }
 
 @Composable
-fun Content(navController: NavHostController, modifier: Modifier, showAbles: List<ShowAble>?,
+fun Content(navController: NavHostController, modifier: Modifier, root: String, showAbles: List<ShowAble>?,
             previous: () -> Unit, next: () -> Unit ){
     if(showAbles == null){
-        Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        Box(modifier = modifier.clickable { navController.navigate("Home") }, contentAlignment = Alignment.Center) {
             Icon(Icons.Default.Refresh, Modifier.size(100.dp)) {
                 Log.i("UwU", "Refresh")
             }

@@ -36,6 +36,7 @@ fun UserReviews(
         Content(navController, modifier = Modifier
             .weight(1f)
             .fillMaxWidth(),
+            "Users/$userId/reviews",
             showAbles = reviews,
             previous = {
                 page--

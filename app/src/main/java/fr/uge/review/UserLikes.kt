@@ -42,6 +42,7 @@ fun UserLikes(
         Content(navController, modifier = Modifier
             .weight(1f)
             .fillMaxWidth(),
+            "Users/$userId/likes",
             showAbles = likes,
             previous = {
                 page--

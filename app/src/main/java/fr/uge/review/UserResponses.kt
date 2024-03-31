@@ -41,6 +41,7 @@ fun UserResponses(
         Content(navController, modifier = Modifier
             .weight(1f)
             .fillMaxWidth(),
+            "Users/$userId/responses",
             showAbles = responses,
             previous = {
                 page--

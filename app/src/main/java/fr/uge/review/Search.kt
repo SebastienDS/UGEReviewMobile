@@ -2,6 +2,7 @@ package fr.uge.review
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -53,7 +54,9 @@ fun Search(navController: NavHostController, sessionManager: SessionManager, api
         Content(
             navController = navController, modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clickable { navController.navigate("Search") },
+            "Search",
                 reviews,
             {
                 page--
